@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import '../estilos/inicio.css'
 
-function Inicio() {
+function Inicio({ productos = [] }) {
   return (
     <main className="inicio-pawpets">
       <section className="hero">
@@ -23,7 +23,26 @@ function Inicio() {
           </div>
           <Link to="/productos">Ver catálogo completo →</Link>
         </div>
-        <div className="product-grid" id="contenedor-productos"></div>
+        <div className="row g-4 mt-2" id="contenedor-productos">
+          {productos.slice(0, 4).map(producto => (
+            <div className="col-12 col-md-6 col-lg-3" key={producto.id}>
+              <article className="card h-100">
+                {producto.imagen && (
+                  <img className="card-img-top imagen-inicio" src={producto.imagen} alt={producto.nombre} />
+                )}
+                <div className="card-body d-flex flex-column">
+                  <h3 className="h5">{producto.nombre}</h3>
+                  <p>{producto.descripcion}</p>
+                  <p className="fw-bold">${producto.precio.toLocaleString('es-CL')}</p>
+                  <Link className="btn btn-primary mt-auto" to={'/productos/' + producto.id}>
+                    Ver producto
+                  </Link>
+                </div>
+              </article>
+            </div>
+          ))}
+          {productos.length === 0 && <p>No hay productos para mostrar.</p>}
+        </div>
       </section>
 
       <section className="container section">
