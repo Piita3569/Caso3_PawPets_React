@@ -1,22 +1,38 @@
-# PawPets React — Evaluación 2
+# PawPets
 
-Base React/Vite/Bootstrap/React Router desarrollada por María Pía. Ver [la adaptación a JSON estático](ADAPTACION_JSON.md) para el alcance vigente, ejecución y pruebas del módulo. El texto siguiente corresponde a la plantilla original de Vite.
+Proyecto de Desarrollo Full Stack II, Evaluación 2. Tienda de productos para mascotas desarrollada con React, Vite, Bootstrap y React Router.
 
-El módulo de Andrés incorpora catálogo público, búsqueda, categorías, ofertas, carrito, checkout y resultados de compra simulada. Ver [su documentación](documentacion/MODULO_ANDRES.md). El carrito y el último resumen usan `useState`: se conservan al navegar y se reinician al recargar. El stock del JSON no se modifica.
+## Instalación y ejecución
 
-Rutas de tienda: `/productos`, `/productos/:id`, `/categorias`, `/categorias/:id`, `/ofertas`, `/carrito`, `/checkout`, `/compra/exito/:id` y `/compra/error`. Las rutas administrativas se conservan. El usuario del checkout se recibe opcionalmente por props; la conexión con el módulo de usuarios queda pendiente.
+Se requiere Node.js compatible con Vite 8 y npm.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+```sh
+npm ci
+npm run dev
+```
 
-Currently, two official plugins are available:
+Para generar la versión de producción y revisar el código:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```sh
+npm run build
+npx eslint src
+```
 
-## React Compiler
+## Funcionalidades
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Inicio y navegación responsiva.
+- Catálogo con búsqueda, detalle de productos, categorías y ofertas.
+- Carrito con cantidades, eliminación de productos y cálculo del total.
+- Checkout con datos del cliente, entrega a domicilio o retiro y pago simulado.
+- Resultado de compra exitosa y pago fallido con reintento.
+- Consulta administrativa de productos y categorías, detalle y filtro de stock crítico.
 
-## Expanding the ESLint configuration
+Los productos y categorías se cargan desde `src/datos/productos.json` y `src/datos/categorias.json`. El carrito y el resumen de compra se mantienen en estado React y se reinician al recargar. La compra es una simulación: no realiza cobros, no guarda pedidos ni modifica el stock del JSON.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+El checkout admite un usuario opcional por props. La integración con las páginas de usuarios, contacto, contenido y seguimiento está pendiente.
+
+## Pruebas
+
+Los archivos de `src/pruebas` contienen 17 pruebas Jasmine. La última ejecución del 18 de octubre de 2026 obtuvo 17/17 resultados correctos con Karma y Chrome Headless en un entorno temporal. También se verificaron la compilación de producción y ESLint de `src`.
+
+La configuración común de Karma todavía no está incorporada al repositorio y no hay un comando `npm test` disponible. Quedan pendientes la revisión visual en móvil, tableta y escritorio y el cálculo de cobertura.
