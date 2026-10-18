@@ -2,6 +2,10 @@
 
 Base React/Vite/Bootstrap/React Router desarrollada por María Pía. Ver [la adaptación a JSON estático](ADAPTACION_JSON.md) para el alcance vigente, ejecución y pruebas del módulo. El texto siguiente corresponde a la plantilla original de Vite.
 
+El módulo de Andrés incorpora catálogo público, búsqueda, categorías, ofertas, carrito, checkout y resultados de compra simulada. Ver [su documentación](documentacion/MODULO_ANDRES.md). El carrito y el último resumen usan `useState`: se conservan al navegar y se reinician al recargar. El stock del JSON no se modifica.
+
+Rutas de tienda: `/productos`, `/productos/:id`, `/categorias`, `/categorias/:id`, `/ofertas`, `/carrito`, `/checkout`, `/compra/exito/:id` y `/compra/error`. Las rutas administrativas se conservan. El usuario del checkout se recibe opcionalmente por props; la conexión con el módulo de usuarios queda pendiente.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
