@@ -52,7 +52,7 @@ function ContenidoApp({ usuario }) {
       <NavegacionTienda />
       <div className="contenido-principal">
         <Routes location={location}>
-          <Route path="/" element={<Inicio />} />
+          <Route path="/" element={<Inicio productos={productos} />} />
           <Route path="/admin/productos" element={<AdminProductos productos={productos} categorias={categorias} />} />
           <Route path="/admin/categorias" element={<AdminCategorias categorias={categorias} productos={productos} />} />
           <Route path="/productos" element={<Catalogo productos={productos} onAgregar={agregar} />} />
