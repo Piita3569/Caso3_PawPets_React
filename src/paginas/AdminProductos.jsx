@@ -1,135 +1,83 @@
 import { useState } from 'react'
-import { listarProductos, crearProducto, actualizarProducto, eliminarProducto } from '../servicios/productos.js'
-import FormularioProducto from '../componentes/FormularioProducto.jsx'
-import { listarCategorias } from '../servicios/categorias.js'
-import { obtenerEstadoStock, contarProductosStockCritico } from '../servicios/stock.js'
+import { Link } from 'react-router-dom'
+import { obtenerEstadoStock, listarProductosStockCritico, UMBRAL_STOCK_CRITICO } from '../servicios/stock.js'
 
-function AdminProductos() {
-  const [productos, setProductos] = useState(() => listarProductos())
-  const [mostrarFormulario, setMostrarFormulario] = useState(false)
+function AdminProductos({ productos = [], categorias = [] }) {
+  // El estado controla la vista; los productos recibidos por props no se modifican.
+  const [soloCriticos, setSoloCriticos] = useState(false)
   const [productoSeleccionado, setProductoSeleccionado] = useState(null)
-  const [categorias] = useState(() => listarCategorias())
+  const criticos = listarProductosStockCritico(productos)
+  const productosVisibles = soloCriticos ? criticos : productos
 
-  const nombreCategoria = (id) =>
-    categorias.find(categoria => categoria.id === id)?.nombre ?? 'Sin categoria'
-
-  function guardarProducto(datos) {
-    if (productoSeleccionado) {
-      actualizarProducto(productoSeleccionado.id, datos)
-    } else {
-      crearProducto(datos)
-    }
-    setProductos(listarProductos())
-    cancelarFormulario()
+  function nombreCategoria(id) {
+    return categorias.find(categoria => categoria.id === id)?.nombre ?? 'Sin categoría'
   }
-
-  function editarProducto(producto) {
-    setProductoSeleccionado(producto)
-    setMostrarFormulario(true)
-  }
-
-  function cancelarFormulario() {
-    setMostrarFormulario(false)
-    setProductoSeleccionado(null)
-  }
-
-  function confirmarEliminacion(producto) {
-    const confirmado = window.confirm(
-      '¿Estas seguro de eliminar el producto "' + producto.nombre + '"?'
-    )
-
-    if (!confirmado) return
-
-    eliminarProducto(producto.id)
-    setProductos(listarProductos())
-
-    if (productoSeleccionado?.id === producto.id) {
-      cancelarFormulario()
-    }
-  }
-
-  const cantidadStockCritico = contarProductosStockCritico(productos)
 
   return (
     <main className="container py-5">
-      <h1>Administracion de productos</h1>
-      <p>Consulta y gestion del inventario de PawPets.</p>
+      <h1>Administración de productos</h1>
+      <p>Consulta del catálogo de PawPets.</p>
+      <Link className="btn btn-outline-success mb-4" to="/admin/categorias">Consultar categorías</Link>
 
-        <div className={cantidadStockCritico > 0 ? 'alert alert-warning' : 'alert alert-success'} role="status">
-          Productos con stock critico o agotado: <strong>{cantidadStockCritico}</strong>
-        </div>
+      <div className={criticos.length > 0 ? 'alert alert-warning' : 'alert alert-success'} role="status">
+        Productos con stock crítico o agotado: <strong>{criticos.length}</strong>
+      </div>
 
-      <button
-        type="button"
-        className="btn btn-success mb-4"
-        onClick={() => {
-          setProductoSeleccionado(null)
-          setMostrarFormulario(true)
-        }}
-      >
-        Nuevo producto
-      </button>
+      <div className="form-check mb-4">
+        <input className="form-check-input" id="solo-criticos" type="checkbox" checked={soloCriticos}
+          onChange={evento => setSoloCriticos(evento.target.checked)} />
+        <label className="form-check-label" htmlFor="solo-criticos">Mostrar solo productos con stock crítico o agotado</label>
+      </div>
 
-      {mostrarFormulario && (
-        <FormularioProducto
-          key={productoSeleccionado?.id ?? 'nuevo'}
-          productoInicial={productoSeleccionado}
-          categorias={categorias}
-          onGuardar={guardarProducto}
-          onCancelar={cancelarFormulario}
-        />
+      {productoSeleccionado && (
+        <section className="card p-4 mb-4" aria-label="Detalle administrativo del producto">
+          <h2 className="h4">{productoSeleccionado.nombre}</h2>
+          <p>{productoSeleccionado.descripcion}</p>
+          <p>Categoría: {nombreCategoria(productoSeleccionado.categoriaId)}</p>
+          <p>Precio: ${productoSeleccionado.precio.toLocaleString('es-CL')}</p>
+          <p>Stock: {productoSeleccionado.stock}</p>
+          <p>Oferta: {productoSeleccionado.oferta ? 'Sí' : 'No'}</p>
+          <button className="btn btn-outline-secondary align-self-start" type="button"
+            onClick={() => setProductoSeleccionado(null)}>Cerrar detalle</button>
+        </section>
       )}
 
       <div className="table-responsive">
         <table className="table table-striped table-bordered align-middle">
+          <caption>Productos del catálogo de PawPets</caption>
           <thead className="table-success">
             <tr>
-              <th>Codigo</th>
-              <th>Producto</th>
-              <th>Categoria</th>
-              <th>Precio</th>
-              <th>Stock</th>
-                <th>Estado</th>
-              <th>Acciones</th>
+              <th scope="col">Código</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Consulta</th>
             </tr>
           </thead>
           <tbody>
-            {productos.map(producto => (
+            {productosVisibles.map(producto => (
               <tr key={producto.id}>
-                <td>{producto.id}</td>
+                <th scope="row">{producto.id}</th>
                 <td>{producto.nombre}</td>
                 <td>{nombreCategoria(producto.categoriaId)}</td>
                 <td>${producto.precio.toLocaleString('es-CL')}</td>
                 <td>{producto.stock}</td>
-                  <td>
-                    <span className={
-                      obtenerEstadoStock(producto.stock) === 'Agotado'
-                        ? 'badge text-bg-danger'
-                        : obtenerEstadoStock(producto.stock) === 'Critico'
-                          ? 'badge text-bg-warning'
-                          : 'badge text-bg-success'
-                    }>
-                      {obtenerEstadoStock(producto.stock)}
-                    </span>
-                  </td>
                 <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-success btn-sm"
-                    onClick={() => editarProducto(producto)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger btn-sm ms-2"
-                    onClick={() => confirmarEliminacion(producto)}
-                  >
-                    Eliminar
-                  </button>
+                  <span className={producto.stock === 0 ? 'badge text-bg-danger'
+                    : producto.stock <= UMBRAL_STOCK_CRITICO ? 'badge text-bg-warning' : 'badge text-bg-success'}>
+                    {obtenerEstadoStock(producto.stock)}
+                  </span>
                 </td>
+                <td><button className="btn btn-outline-success btn-sm" type="button"
+                  aria-label={'Ver detalle de ' + producto.nombre}
+                  onClick={() => setProductoSeleccionado(producto)}>Ver detalle</button></td>
               </tr>
             ))}
+            {productosVisibles.length === 0 && (
+              <tr><td colSpan="7">{soloCriticos ? 'No hay productos con stock crítico o agotado.' : 'No hay productos para mostrar.'}</td></tr>
+            )}
           </tbody>
         </table>
       </div>
