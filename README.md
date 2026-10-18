@@ -1,4 +1,6 @@
-# React + Vite
+# PawPets React — Evaluación 2
+
+Base React/Vite/Bootstrap/React Router desarrollada por María Pía. Ver [la adaptación a JSON estático](ADAPTACION_JSON.md) para el alcance vigente, ejecución y pruebas del módulo. El texto siguiente corresponde a la plantilla original de Vite.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
