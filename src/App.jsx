@@ -8,6 +8,7 @@ import BlogCalor from './paginas/BlogCalor.jsx'
 import BlogVacunas from './paginas/BlogVacunas.jsx'
 import AdminProductos from './paginas/AdminProductos.jsx'
 import AdminCategorias from './paginas/AdminCategorias.jsx'
+import AdminReportes from './paginas/AdminReportes.jsx'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/blog/vacunas" element={<BlogVacunas />} />
           <Route path="/admin/productos" element={<AdminProductos />} />
           <Route path="/admin/categorias" element={<AdminCategorias />} />
+            <Route path="/admin/reportes" element={<AdminReportes />} />
         </Routes>
       </div>
       <Footer />
