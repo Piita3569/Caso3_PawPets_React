@@ -10,17 +10,31 @@ describe('CRUD de productos PawPets', () => {
   let memoria
 
   beforeEach(() => {
-    almacenamientoOriginal = globalThis.localStorage
+    almacenamientoOriginal = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'localStorage'
+    )
     memoria = new Map()
 
-    globalThis.localStorage = {
-      getItem: clave => memoria.get(clave) ?? null,
-      setItem: (clave, valor) => memoria.set(clave, valor)
-    }
+    Object.defineProperty(globalThis, 'localStorage', {
+      configurable: true,
+      value: {
+        getItem: clave => memoria.get(clave) ?? null,
+        setItem: (clave, valor) => memoria.set(clave, valor)
+      }
+    })
   })
 
   afterEach(() => {
-    globalThis.localStorage = almacenamientoOriginal
+    if (almacenamientoOriginal) {
+      Object.defineProperty(
+        globalThis,
+        'localStorage',
+        almacenamientoOriginal
+      )
+    } else {
+      delete globalThis.localStorage
+    }
   })
 
   it('debe crear un producto correctamente', () => {

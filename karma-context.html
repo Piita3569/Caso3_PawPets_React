@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pruebas PawPets</title>
+</head>
+<body>
+  <script src="context.js"></script>
+  <script>
+    %CLIENT_CONFIG%
+    window.__karma__.setupContext(window);
+    %MAPPINGS%
+  </script>
+  %SCRIPTS%
+  <script type="module">
+    import 'http://localhost:5173/src/pruebas/productos.spec.js';
+    window.__karma__.loaded();
+  </script>
+</body>
+</html>
