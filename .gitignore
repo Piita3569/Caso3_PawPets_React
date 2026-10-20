@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 coverage/
+
+# Chrome local para pruebas Karma
+/chrome/
