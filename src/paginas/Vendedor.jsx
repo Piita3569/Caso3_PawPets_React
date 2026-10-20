@@ -8,6 +8,16 @@ function Vendedor() {
   const navigate = useNavigate()
   const clientes = listarUsuarios().filter(u => u.rol === 'cliente')
 
+  if (!sesion) {
+    navigate('/login')
+    return null
+  } // fin if no sesion
+
+  if (sesion.rol !== 'vendedor') {
+    navigate('/')
+    return null
+  } // fin if rol incorrecto
+
   function handleCerrarSesion() {
     cerrarSesion()
     navigate('/login')
