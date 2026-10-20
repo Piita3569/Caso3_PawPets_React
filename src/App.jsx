@@ -4,6 +4,11 @@ import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-do
 import Header from './componentes/Header.jsx'
 import Footer from './componentes/Footer.jsx'
 import Inicio from './paginas/Inicio.jsx'
+import Nosotros from './paginas/Nosotros.jsx'
+import Blog from './paginas/Blog.jsx'
+import BlogCalor from './paginas/BlogCalor.jsx'
+import BlogVacunas from './paginas/BlogVacunas.jsx'
+import AdminReportes from './paginas/AdminReportes.jsx'
 import AdminProductos from './paginas/AdminProductos.jsx'
 import AdminCategorias from './paginas/AdminCategorias.jsx'
 import Catalogo from './paginas/Catalogo.jsx'
@@ -65,6 +70,11 @@ function ContenidoApp({ usuario, setUsuario }) {
       <div className="contenido-principal">
         <Routes location={location}>
           <Route path="/" element={<Inicio productos={productos} />} />
+          <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/calor" element={<BlogCalor />} />
+          <Route path="/blog/vacunas" element={<BlogVacunas />} />
+          <Route path="/admin/reportes" element={<AdminReportes productos={productos} />} />
           <Route path="/admin/productos" element={<AdminProductos productos={productos} categorias={categorias} />} />
           <Route path="/admin/categorias" element={<AdminCategorias categorias={categorias} productos={productos} />} />
           <Route path="/productos" element={<Catalogo productos={productos} onAgregar={agregar} />} />

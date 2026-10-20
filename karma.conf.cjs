@@ -2,10 +2,10 @@ module.exports = function (config) {
   config.set({
     frameworks: ["jasmine", "webpack"],
     files: [
-      { pattern: "src/pruebas/**/*.spec.jsx", watched: false }
+      { pattern: "src/test/**/*.spec.@(js|jsx)", watched: false }
     ],
     preprocessors: {
-      "src/pruebas/**/*.spec.jsx": ["webpack"]
+      "src/test/**/*.spec.@(js|jsx)": ["webpack"]
     },
     webpack: {
       mode: "development",
