@@ -25,6 +25,8 @@ import Contacto from './paginas/Contacto.jsx'
 import Vendedor from './paginas/Vendedor.jsx'
 import AdminUsuarios from './paginas/AdminUsuarios.jsx'
 import Perfil from './paginas/Perfil.jsx'
+import NuevoUsuario from './paginas/NuevoUsuario.jsx'
+import EditarUsuario from './paginas/EditarUsuario.jsx'
 import './estilos/tienda.css'
 
 
@@ -79,6 +81,8 @@ function ContenidoApp({ usuario, setUsuario }) {
           <Route path="/registro" element={<Registro />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/vendedor" element={<Vendedor />} />
+          <Route path="/admin/usuarios/nuevo" element={<NuevoUsuario />} />
+          <Route path="/admin/usuarios/:id" element={<EditarUsuario />} />
           <Route path="/admin/usuarios" element={<AdminUsuarios />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="*" element={<main className="container py-4"><h1>Vista no disponible</h1>
