@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { buscarUsuarioPorEmail } from '../servicios/usuarios.js'
 import { iniciarSesion, destinoRol } from '../servicios/sesion.js'
 
-function Login() {
+function Login({ onLogin }) {
   const [formulario, setFormulario] = useState({
     email: '',
     password: '',
@@ -74,7 +74,8 @@ function Login() {
       return
     } // fin if rol incorrecto
 
-    iniciarSesion(usuario)
+    const sesion = iniciarSesion(usuario)
+    onLogin(sesion)
     navigate(destinoRol(usuario.rol))
   } // fin handleSubmit
 

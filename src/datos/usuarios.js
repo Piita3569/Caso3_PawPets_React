@@ -9,6 +9,7 @@ export const usuariosIniciales = [
     rut: '19011022K',
     region: 'Metropolitana',
     comuna: 'Santiago',
+    direccion: 'Av. Providencia 1234',
     rol: 'administrador'
   },
   {
@@ -19,6 +20,7 @@ export const usuariosIniciales = [
     rut: '20123456K',
     region: 'Metropolitana',
     comuna: 'Puente Alto',
+    direccion: 'Av. Concha y Toro 567',
     rol: 'vendedor'
   },
   {
@@ -29,6 +31,7 @@ export const usuariosIniciales = [
     rut: '15678901K',
     region: 'Valparaíso',
     comuna: 'Viña del Mar',
+    direccion: 'Av. España 890',
     rol: 'cliente'
   }
 ] // fin usuariosIniciales

@@ -18,6 +18,7 @@ import productos from './datos/productos.json'
 import categorias from './datos/categorias.json'
 import { agregarAlCarrito, cambiarCantidad, quitarDelCarrito } from './servicios/carrito.js'
 import { confirmarCompra } from './servicios/compras.js'
+import { obtenerSesion } from './servicios/sesion.js'
 import Login from './paginas/Login.jsx'
 import Registro from './paginas/Registro.jsx'
 import Contacto from './paginas/Contacto.jsx'
@@ -26,7 +27,8 @@ import AdminUsuarios from './paginas/AdminUsuarios.jsx'
 import Perfil from './paginas/Perfil.jsx'
 import './estilos/tienda.css'
 
-function ContenidoApp({ usuario }) {
+
+function ContenidoApp({ usuario, setUsuario }) {
   const [carrito, setCarrito] = useState([])
   const [ultimoPedido, setUltimoPedido] = useState(null)
   const location = useLocation()
@@ -52,6 +54,8 @@ function ContenidoApp({ usuario }) {
 
   const cantidadCarrito = carrito.reduce((total, item) => total + item.cantidad, 0)
 
+  console.log('usuario en App:', usuario)
+
   return (
     <>
       <Header cantidadCarrito={cantidadCarrito} />
@@ -71,7 +75,7 @@ function ContenidoApp({ usuario }) {
           <Route path="/checkout" element={<Checkout carrito={carrito} productos={productos} onConfirmar={comprar} usuario={usuario} />} />
           <Route path="/compra/exito/:id" element={<ResultadoCompra pedido={ultimoPedido} />} />
           <Route path="/compra/error" element={<ResultadoCompra fallido />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login onLogin={setUsuario} />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/vendedor" element={<Vendedor />} />
@@ -86,8 +90,13 @@ function ContenidoApp({ usuario }) {
   )
 } // fin ContenidoApp
 
-function App({ usuario = null }) {
-  return <BrowserRouter><ContenidoApp usuario={usuario} /></BrowserRouter>
+function App() {
+  const [usuario, setUsuario] = useState(() => obtenerSesion())
+  return (
+    <BrowserRouter>
+      <ContenidoApp usuario={usuario} setUsuario={setUsuario} />
+    </BrowserRouter>
+  )
 } // fin App
 
 export default App
