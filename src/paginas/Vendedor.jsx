@@ -1,9 +1,12 @@
 import { obtenerSesion, cerrarSesion } from '../servicios/sesion.js'
+import { listarUsuarios } from '../servicios/usuarios.js'
 import { useNavigate } from 'react-router-dom'
+import productos from '../datos/productos.json'
 
 function Vendedor() {
   const sesion = obtenerSesion()
   const navigate = useNavigate()
+  const clientes = listarUsuarios().filter(u => u.rol === 'cliente')
 
   function handleCerrarSesion() {
     cerrarSesion()
@@ -28,29 +31,75 @@ function Vendedor() {
       </div>
 
       <div className="row g-4">
-        <div className="col-12 col-md-4">
-          <div className="card p-4 h-100">
+
+        <div className="col-12">
+          <div className="card p-4">
             <h3>Inventario</h3>
-            <p>Consulta los productos disponibles en la tienda.</p>
+            <p className="text-muted">Productos disponibles en la tienda.</p>
+            <div className="table-responsive">
+              <table className="table table-striped table-bordered align-middle">
+                <thead className="table-success">
+                  <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productos.map(producto => (
+                    <tr key={producto.id}>
+                      <td>{producto.id}</td>
+                      <td>{producto.nombre}</td>
+                      <td>${producto.precio.toLocaleString('es-CL')}</td>
+                      <td>{producto.stock}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         {/* fin card inventario */}
 
-        <div className="col-12 col-md-4">
-          <div className="card p-4 h-100">
+        <div className="col-12">
+          <div className="card p-4">
             <h3>Mis clientes</h3>
-            <p>Listado de clientes asignados.</p>
+            <p className="text-muted">Listado de clientes registrados.</p>
+            <div className="table-responsive">
+              <table className="table table-striped table-bordered align-middle">
+                <thead className="table-success">
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Región</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clientes.map(cliente => (
+                    <tr key={cliente.id}>
+                      <td>{cliente.id}</td>
+                      <td>{cliente.nombre}</td>
+                      <td>{cliente.email}</td>
+                      <td>{cliente.region}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         {/* fin card clientes */}
 
-        <div className="col-12 col-md-4">
-          <div className="card p-4 h-100">
+        <div className="col-12">
+          <div className="card p-4">
             <h3>Mis ventas</h3>
-            <p>Historial de ventas realizadas.</p>
+            <p className="text-muted">Las ventas estarán disponibles cuando Pablo integre el módulo de órdenes.</p>
           </div>
         </div>
         {/* fin card ventas */}
+
       </div>
     </main>
   )
