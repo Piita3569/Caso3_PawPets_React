@@ -18,6 +18,12 @@ import productos from './datos/productos.json'
 import categorias from './datos/categorias.json'
 import { agregarAlCarrito, cambiarCantidad, quitarDelCarrito } from './servicios/carrito.js'
 import { confirmarCompra } from './servicios/compras.js'
+import Login from './paginas/Login.jsx'
+import Registro from './paginas/Registro.jsx'
+import Contacto from './paginas/Contacto.jsx'
+import Vendedor from './paginas/Vendedor.jsx'
+import AdminUsuarios from './paginas/AdminUsuarios.jsx'
+import Perfil from './paginas/Perfil.jsx'
 import './estilos/tienda.css'
 
 function ContenidoApp({ usuario }) {
@@ -65,6 +71,12 @@ function ContenidoApp({ usuario }) {
           <Route path="/checkout" element={<Checkout carrito={carrito} productos={productos} onConfirmar={comprar} usuario={usuario} />} />
           <Route path="/compra/exito/:id" element={<ResultadoCompra pedido={ultimoPedido} />} />
           <Route path="/compra/error" element={<ResultadoCompra fallido />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/vendedor" element={<Vendedor />} />
+          <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route path="*" element={<main className="container py-4"><h1>Vista no disponible</h1>
             <p>Esta dirección no tiene una página integrada todavía.</p><Link to="/productos">Ir a la tienda</Link></main>} />
         </Routes>
@@ -72,11 +84,10 @@ function ContenidoApp({ usuario }) {
       <Footer />
     </>
   )
-}
+} // fin ContenidoApp
 
-// El módulo de usuarios puede entregar el usuario por props cuando se integre.
 function App({ usuario = null }) {
   return <BrowserRouter><ContenidoApp usuario={usuario} /></BrowserRouter>
-}
+} // fin App
 
 export default App
