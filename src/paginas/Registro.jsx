@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { crearUsuario } from '../servicios/usuarios.js'
-
-const REGIONES = {
-  'Metropolitana': ['Santiago', 'Puente Alto', 'Maipú', 'La Florida'],
-  'Valparaíso': ['Viña del Mar', 'Valparaíso', 'Quilpué', 'Villa Alemana'],
-  'Biobío': ['Concepción', 'Talcahuano', 'Chiguayante', 'San Pedro de la Paz']
-} // fin REGIONES
+import { regionesCompra as REGIONES } from '../datos/regionesCompra.js'
 
 function Registro() {
   const [formulario, setFormulario] = useState({
