@@ -23,7 +23,7 @@ import productos from './datos/productos.json'
 import categorias from './datos/categorias.json'
 import { agregarAlCarrito, cambiarCantidad, quitarDelCarrito } from './servicios/carrito.js'
 import { confirmarCompra } from './servicios/compras.js'
-import { obtenerSesion } from './servicios/sesion.js'
+import { obtenerSesion, iniciarSesion, cerrarSesion } from './servicios/sesion.js'
 import Login from './paginas/Login.jsx'
 import Registro from './paginas/Registro.jsx'
 import Contacto from './paginas/Contacto.jsx'
@@ -35,7 +35,8 @@ import EditarUsuario from './paginas/EditarUsuario.jsx'
 import './estilos/tienda.css'
 
 
-function ContenidoApp({ usuario, setUsuario }) {
+function ContenidoApp() {
+  const [usuario, setUsuario] = useState(() => obtenerSesion())
   const [carrito, setCarrito] = useState([])
   const [ultimoPedido, setUltimoPedido] = useState(null)
   const location = useLocation()
@@ -59,9 +60,23 @@ function ContenidoApp({ usuario, setUsuario }) {
     return pedido
   }
 
-  const cantidadCarrito = carrito.reduce((total, item) => total + item.cantidad, 0)
+  function recibirSesion(sesion) {
+    setUsuario(sesion)
+    setUltimoPedido(null)
+  }
 
-  console.log('usuario en App:', usuario)
+  function cerrarSesionActual() {
+    cerrarSesion()
+    recibirSesion(null)
+  }
+
+  function actualizarUsuarioSesion(usuarioActualizado) {
+    if (usuario?.id === usuarioActualizado.id) {
+      setUsuario(iniciarSesion(usuarioActualizado))
+    }
+  }
+
+  const cantidadCarrito = carrito.reduce((total, item) => total + item.cantidad, 0)
 
   return (
     <>
@@ -84,17 +99,17 @@ function ContenidoApp({ usuario, setUsuario }) {
           <Route path="/ofertas" element={<Ofertas productos={productos} onAgregar={agregar} />} />
           <Route path="/carrito" element={<Carrito carrito={carrito} productos={productos} onCambiarCantidad={cambiar}
             onEliminar={id => setCarrito(quitarDelCarrito(carrito, id))} onVaciar={() => setCarrito([])} />} />
-          <Route path="/checkout" element={<Checkout carrito={carrito} productos={productos} onConfirmar={comprar} usuario={usuario} />} />
+          <Route path="/checkout" element={<Checkout key={usuario?.id ?? 'invitado'} carrito={carrito} productos={productos} onConfirmar={comprar} usuario={usuario} />} />
           <Route path="/compra/exito/:id" element={<ResultadoCompra pedido={ultimoPedido} />} />
           <Route path="/compra/error" element={<ResultadoCompra fallido />} />
-          <Route path="/login" element={<Login onLogin={setUsuario} />} />
+          <Route path="/login" element={<Login onLogin={recibirSesion} />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/contacto" element={<Contacto />} />
-          <Route path="/vendedor" element={<Vendedor />} />
+          <Route path="/vendedor" element={<Vendedor onCerrarSesion={cerrarSesionActual} />} />
           <Route path="/admin/usuarios/nuevo" element={<NuevoUsuario />} />
-          <Route path="/admin/usuarios/:id" element={<EditarUsuario />} />
+          <Route path="/admin/usuarios/:id" element={<EditarUsuario onActualizarUsuario={actualizarUsuarioSesion} />} />
           <Route path="/admin/usuarios" element={<AdminUsuarios />} />
-          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil" element={<Perfil onActualizarUsuario={actualizarUsuarioSesion} onCerrarSesion={cerrarSesionActual} />} />
           <Route path="*" element={<main className="container py-4"><h1>Vista no disponible</h1>
             <p>Esta dirección no tiene una página integrada todavía.</p><Link to="/productos">Ir a la tienda</Link></main>} />
         </Routes>
@@ -105,10 +120,9 @@ function ContenidoApp({ usuario, setUsuario }) {
 } // fin ContenidoApp
 
 function App() {
-  const [usuario, setUsuario] = useState(() => obtenerSesion())
   return (
     <BrowserRouter>
-      <ContenidoApp usuario={usuario} setUsuario={setUsuario} />
+      <ContenidoApp />
     </BrowserRouter>
   )
 } // fin App

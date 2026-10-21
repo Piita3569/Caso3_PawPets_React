@@ -1,25 +1,23 @@
-import { obtenerSesion, cerrarSesion } from '../servicios/sesion.js'
+import { obtenerSesion } from '../servicios/sesion.js'
 import { listarUsuarios } from '../servicios/usuarios.js'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import productos from '../datos/productos.json'
 
-function Vendedor() {
+function Vendedor({ onCerrarSesion }) {
   const sesion = obtenerSesion()
   const navigate = useNavigate()
   const clientes = listarUsuarios().filter(u => u.rol === 'cliente')
 
   if (!sesion) {
-    navigate('/login')
-    return null
+    return <Navigate to="/login" replace />
   } // fin if no sesion
 
   if (sesion.rol !== 'vendedor') {
-    navigate('/')
-    return null
+    return <Navigate to="/" replace />
   } // fin if rol incorrecto
 
   function handleCerrarSesion() {
-    cerrarSesion()
+    onCerrarSesion()
     navigate('/login')
   } // fin handleCerrarSesion
 
