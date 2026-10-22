@@ -25,6 +25,7 @@ import { agregarAlCarrito, cambiarCantidad, quitarDelCarrito } from './servicios
 import { confirmarCompra } from './servicios/compras.js'
 import { obtenerSesion } from './servicios/sesion.js'
 import { crearCategoria, editarCategoria, eliminarCategoria } from './servicios/categorias.js'
+import { crearProducto, editarProducto, eliminarProducto } from './servicios/productos.js'
 import Login from './paginas/Login.jsx'
 import Registro from './paginas/Registro.jsx'
 import Contacto from './paginas/Contacto.jsx'
@@ -78,7 +79,30 @@ function ContenidoApp({ usuario, setUsuario }) {
           <Route path="/blog/calor" element={<BlogCalor />} />
           <Route path="/blog/vacunas" element={<BlogVacunas />} />
           <Route path="/admin/reportes" element={<AdminReportes productos={productos} />} />
-          <Route path="/admin/productos" element={<AdminProductos productos={productos} categorias={categorias} />} />
+            <Route
+              path="/admin/productos"
+              element={
+                <AdminProductos
+                  productos={productos}
+                  categorias={categorias}
+                  onCrear={datos => {
+                    const actualizados = crearProducto(productos, categorias, datos)
+                    setProductos(actualizados)
+                  }}
+                  onEditar={(id, datos) => {
+                    const actualizados = editarProducto(productos, categorias, id, datos)
+                    setProductos(actualizados)
+                  }}
+                    onEliminar={id => {
+                      if (carrito.some(item => item.id === id || item.productoId === id)) {
+                        throw new Error("No puedes eliminar un producto que está en el carrito.")
+                      }
+                      const actualizados = eliminarProducto(productos, id)
+                      setProductos(actualizados)
+                    }}
+                />
+              }
+            />
           <Route path="/admin/categorias" element={<AdminCategorias categorias={categorias} productos={productos} onCrear={nombre => setCategorias(actuales => crearCategoria(actuales, nombre))} onEditar={(id, nombre) => setCategorias(actuales => editarCategoria(actuales, id, nombre))} onEliminar={id => setCategorias(actuales => eliminarCategoria(actuales, productos, id))} />} />
           <Route path="/productos" element={<Catalogo productos={productos} onAgregar={agregar} />} />
           <Route path="/productos/:id" element={<DetalleProducto key={location.pathname} productos={productos} onAgregar={agregar} />} />
