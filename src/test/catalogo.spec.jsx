@@ -78,6 +78,6 @@ describe('Catálogo estático de María Pía', () => {
     expect(filas.length).toBe(categorias.length)
     expect(filas[0].textContent).toContain(categorias[0].nombre)
     expect(filas[0].querySelectorAll('td')[1].textContent).toBe(String(productos.filter(producto => producto.categoriaId === categorias[0].id).length))
-    expect(contenedor.querySelector('button')).toBeNull()
+    expect(contenedor.querySelector('button[type="submit"]')?.textContent).toContain('Crear categoría')
   })
 })

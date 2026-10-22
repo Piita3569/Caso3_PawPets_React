@@ -18,11 +18,13 @@ import Ofertas from './paginas/Ofertas.jsx'
 import Carrito from './paginas/Carrito.jsx'
 import Checkout from './paginas/Checkout.jsx'
 import ResultadoCompra from './paginas/ResultadoCompra.jsx'
+import DetallePedido from './paginas/DetallePedido.jsx'
 import NavegacionTienda from './componentes/NavegacionTienda.jsx'
-import productos from './datos/productos.json'
-import categorias from './datos/categorias.json'
+import productosIniciales from './datos/productos.json'
+import categoriasIniciales from './datos/categorias.json'
 import { agregarAlCarrito, cambiarCantidad, quitarDelCarrito } from './servicios/carrito.js'
 import { confirmarCompra } from './servicios/compras.js'
+import { crearCategoria, editarCategoria, eliminarCategoria } from './servicios/categorias.js'
 import { obtenerSesion, iniciarSesion, cerrarSesion } from './servicios/sesion.js'
 import Login from './paginas/Login.jsx'
 import Registro from './paginas/Registro.jsx'
@@ -37,9 +39,12 @@ import './estilos/tienda.css'
 
 
 function ContenidoApp() {
+  const [productos] = useState(() => productosIniciales.map(producto => ({ ...producto })))
+  const [categorias, setCategorias] = useState(() => categoriasIniciales.map(categoria => ({ ...categoria })))
   const [usuario, setUsuario] = useState(() => obtenerSesion())
   const [carrito, setCarrito] = useState([])
   const [ultimoPedido, setUltimoPedido] = useState(null)
+  const [pedidos, setPedidos] = useState([])
   const location = useLocation()
 
   function agregar(id) {
@@ -57,6 +62,7 @@ function ContenidoApp() {
   function comprar(cliente, usuarioId) {
     const pedido = confirmarCompra(carrito, cliente, productos, usuarioId)
     setUltimoPedido(pedido)
+    setPedidos(actuales => [...actuales, pedido])
     setCarrito([])
     return pedido
   }
@@ -81,8 +87,8 @@ function ContenidoApp() {
 
   return (
     <>
-      <Header cantidadCarrito={cantidadCarrito} />
-      <NavegacionTienda />
+        <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><Header cantidadCarrito={cantidadCarrito} /></div>
+        <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><NavegacionTienda /></div>
       <div className="contenido-principal">
         <Routes location={location}>
           <Route path="/" element={<Inicio productos={productos} />} />
@@ -90,9 +96,10 @@ function ContenidoApp() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/calor" element={<BlogCalor />} />
           <Route path="/blog/vacunas" element={<BlogVacunas />} />
-          <Route path="/admin/reportes" element={<AdminReportes productos={productos} />} />
+          <Route path="/admin/reportes" element={<AdminReportes productos={productos} pedidos={pedidos} />} />
+          <Route path="/admin/pedidos/:id" element={<DetallePedido pedido={pedidos.find(pedido => String(pedido.id) === location.pathname.split("/").pop())} />} />
           <Route path="/admin/productos" element={<AdminProductos productos={productos} categorias={categorias} />} />
-          <Route path="/admin/categorias" element={<AdminCategorias categorias={categorias} productos={productos} />} />
+          <Route path="/admin/categorias" element={<AdminCategorias categorias={categorias} productos={productos} onCrear={nombre => setCategorias(actuales => crearCategoria(actuales, nombre))} onEditar={(id, nombre) => setCategorias(actuales => editarCategoria(actuales, id, nombre))} onEliminar={id => setCategorias(actuales => eliminarCategoria(actuales, productos, id))} />} />
           <Route path="/productos" element={<Catalogo productos={productos} onAgregar={agregar} />} />
           <Route path="/productos/:id" element={<DetalleProducto key={location.pathname} productos={productos} onAgregar={agregar} />} />
           <Route path="/categorias" element={<Categorias productos={productos} categorias={categorias} onAgregar={agregar} />} />
@@ -116,7 +123,7 @@ function ContenidoApp() {
             <p>Esta dirección no tiene una página integrada todavía.</p><Link to="/productos">Ir a la tienda</Link></main>} />
         </Routes>
       </div>
-      <Footer />
+        <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><Footer /></div>
     </>
   )
 } // fin ContenidoApp
