@@ -61,7 +61,13 @@ function AdminUsuarios() {
                 <td>{usuario.region}</td>
                 <td>
                   <button
-                    className="btn btn-outline-success btn-sm"
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={() => navigate('/admin/usuarios/detalle/' + usuario.id)}
+                  >
+                    Ver
+                  </button>
+                  <button
+                    className="btn btn-outline-success btn-sm ms-2"
                     onClick={() => navigate('/admin/usuarios/' + usuario.id)}
                   >
                     Editar
