@@ -1,6 +1,6 @@
 // Catálogo compartido desde JSON y carrito en memoria mediante estado React.
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Outlet, useLocation, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom'
 import Header from './componentes/Header.jsx'
 import RutaProtegida from './componentes/RutaProtegida.jsx'
 import Footer from './componentes/Footer.jsx'
