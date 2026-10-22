@@ -9,6 +9,7 @@ function FormularioUsuario({ usuarioInicial = null, onGuardar, onCancelar }) {
     rut: usuarioInicial?.rut ?? '',
     region: usuarioInicial?.region ?? '',
     comuna: usuarioInicial?.comuna ?? '',
+    direccion: usuarioInicial?.direccion ?? '',
     rol: usuarioInicial?.rol ?? 'cliente'
   }) // fin estado formulario
 
@@ -100,6 +101,19 @@ function FormularioUsuario({ usuarioInicial = null, onGuardar, onCancelar }) {
           />
         </div>
         {/* fin campo rut */}
+
+        <div className="col-md-6">
+        <label htmlFor="direccion" className="form-label">Dirección</label>
+        <input
+          id="direccion"
+          name="direccion"
+          className="form-control"
+          value={formulario.direccion}
+          onChange={cambiarCampo}
+          placeholder="Av. Ejemplo 1234"
+          />
+        </div>
+        {/* fin campo direccion */}
 
         <div className="col-md-6">
           <label htmlFor="region" className="form-label">Región</label>

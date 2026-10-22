@@ -32,6 +32,7 @@ import AdminUsuarios from './paginas/AdminUsuarios.jsx'
 import Perfil from './paginas/Perfil.jsx'
 import NuevoUsuario from './paginas/NuevoUsuario.jsx'
 import EditarUsuario from './paginas/EditarUsuario.jsx'
+import DetalleUsuario from './paginas/DetalleUsuario.jsx'
 import './estilos/tienda.css'
 
 
@@ -106,6 +107,7 @@ function ContenidoApp() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/vendedor" element={<Vendedor onCerrarSesion={cerrarSesionActual} />} />
+          <Route path="/admin/usuarios/detalle/:id" element={<DetalleUsuario />} />
           <Route path="/admin/usuarios/nuevo" element={<NuevoUsuario />} />
           <Route path="/admin/usuarios/:id" element={<EditarUsuario onActualizarUsuario={actualizarUsuarioSesion} />} />
           <Route path="/admin/usuarios" element={<AdminUsuarios />} />

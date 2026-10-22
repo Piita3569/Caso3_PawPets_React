@@ -11,7 +11,8 @@ function Registro() {
     confirmarPassword: '',
     rut: '',
     region: '',
-    comuna: ''
+    comuna: '',
+    direccion: ''
   }) // fin estado formulario
 
   const [errores, setErrores] = useState({}) // fin estado errores
@@ -93,13 +94,14 @@ function Registro() {
         rut: formulario.rut,
         region: formulario.region,
         comuna: formulario.comuna,
+        direccion: formulario.direccion,
         rol: 'cliente'
       })
       setErrores({})
       setMensaje('¡Registro exitoso! Ya puedes iniciar sesión.')
       setFormulario({
         nombre: '', email: '', password: '',
-        confirmarPassword: '', rut: '', region: '', comuna: ''
+        confirmarPassword: '', rut: '', region: '', comuna: '', direccion: ''
       })
     } catch (err) {
       setErrores({ email: err.message })
@@ -201,6 +203,20 @@ function Registro() {
               )}
             </div>
             {/* fin campo rut */}
+
+            <div className="mb-3">
+            <label htmlFor="direccion" className="form-label">Dirección</label>
+            <input
+              id="direccion"
+              name="direccion"
+              type="text"
+              className="form-control"
+              value={formulario.direccion}
+              onChange={cambiarCampo}
+              placeholder="Av. Ejemplo 1234"
+            />
+           </div>
+            {/* fin campo direccion */}
 
             <div className="row g-3 mb-3">
               <div className="col-md-6">

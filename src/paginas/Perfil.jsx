@@ -13,7 +13,8 @@ function Perfil({ onActualizarUsuario, onCerrarSesion }) {
     nombre: usuarioActual?.nombre ?? '',
     email: usuarioActual?.email ?? '',
     region: usuarioActual?.region ?? '',
-    comuna: usuarioActual?.comuna ?? ''
+    comuna: usuarioActual?.comuna ?? '',
+    direccion: usuarioActual?.direccion ?? ''
   }) // fin estado formulario
 
   const [mensaje, setMensaje] = useState('') // fin estado mensaje
@@ -112,6 +113,20 @@ function Perfil({ onActualizarUsuario, onCerrarSesion }) {
               />
             </div>
             {/* fin campo email */}
+
+            <div className="mb-3">
+            <label htmlFor="direccion" className="form-label">Dirección</label>
+            <input
+              id="direccion"
+              name="direccion"
+              className="form-control"
+              value={formulario.direccion}
+              onChange={cambiarCampo}
+              placeholder="Av. Ejemplo 1234"
+              />
+            </div>
+            {/* fin campo direccion */}
+            
 
             <div className="row g-3 mb-3">
               <div className="col-md-6">
