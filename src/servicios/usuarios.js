@@ -48,6 +48,14 @@ export function actualizarUsuario(id, datosActualizados) {
 
   if (indice === -1) throw new Error('El usuario no existe.')
 
+  const emailNuevo = String(datosActualizados.email ?? '').trim().toLowerCase()
+
+  const duplicado = usuarios.some(
+    usuario => usuario.email.toLowerCase() === emailNuevo && usuario.id !== Number(id)
+  )
+
+  if (duplicado) throw new Error('Ya existe un usuario con ese correo.')
+
   usuarios[indice] = {
     ...usuarios[indice],
     ...datosActualizados,
