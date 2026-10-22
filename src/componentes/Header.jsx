@@ -38,6 +38,7 @@ function Header({ cantidadCarrito = 0 }) {
               <NavLink className="nav-link" to="/contacto" onClick={cerrarMenu}>Contacto</NavLink>
               <NavLink className="nav-link" to="/vendedor" onClick={cerrarMenu}>Vendedor</NavLink>
               <NavLink className="nav-link" to="/admin/productos" onClick={cerrarMenu}>Administrador</NavLink>
+              <NavLink className="nav-link" to="/admin/reportes" onClick={cerrarMenu}>Reportes</NavLink>
               <NavLink className="nav-link" to="/login" onClick={cerrarMenu}>Ingresar</NavLink>
               <NavLink className="cart-button" to="/carrito" onClick={cerrarMenu}>
                 🛒 Carrito <b>{cantidadCarrito}</b>

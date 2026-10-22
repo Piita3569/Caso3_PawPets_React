@@ -1,40 +1,19 @@
+import { Link } from 'react-router-dom'
 import { contarProductosStockCritico } from '../servicios/stock.js'
 
-const pedidosEjemplo = [
-  {
-    id: 'PP-001',
-    cliente: 'Andrea Pérez',
-    vendedor: 'Turno mañana',
-    total: 25000,
-    estado: 'Pendiente'
-  },
-  {
-    id: 'PP-002',
-    cliente: 'Juan Soto',
-    vendedor: 'Turno mañana',
-    total: 3500,
-    estado: 'Entregado'
-  },
-  {
-    id: 'PP-003',
-    cliente: 'Camila Rojas',
-    vendedor: 'Turno tarde',
-    total: 18000,
-    estado: 'En preparación'
-  }
-]
 
-function AdminReportes({ productos }) {
+function AdminReportes({ productos, pedidos = [] }) {
   const stockBajo = contarProductosStockCritico(productos)
 
-  const ventasDelMes = pedidosEjemplo.reduce(
-    (total, pedido) => total + pedido.total,
-    0
-  )
+  const ahora = new Date()
+  const pedidosDelMes = pedidos
+    .filter(pedido => {
+      const fecha = new Date(pedido.fecha)
+      return fecha.getFullYear() === ahora.getFullYear() && fecha.getMonth() === ahora.getMonth()
+    })
+  const ventasDelMes = pedidosDelMes.reduce((total, pedido) => total + pedido.total, 0)
 
-  const pedidosPendientes = pedidosEjemplo.filter(
-    pedido => pedido.estado === 'Pendiente'
-  ).length
+  const cantidadPedidos = pedidos.length
 
   const formatoPrecio = valor => `$${valor.toLocaleString('es-CL')}`
 
@@ -43,7 +22,7 @@ function AdminReportes({ productos }) {
       <p className="text-success fw-bold">Administrador</p>
       <h1>Reportes de ventas y seguimiento</h1>
       <p className="text-muted">
-        Datos de ejemplo para el seguimiento de ventas.
+          Resumen de compras confirmadas durante esta sesión. Los datos se mantienen en memoria.
       </p>
 
       <div className="row g-3 my-4">
@@ -51,15 +30,15 @@ function AdminReportes({ productos }) {
           <article className="bg-white rounded p-4 h-100">
             <h2 className="h5">Ventas del mes</h2>
             <p className="fs-3 fw-bold">{formatoPrecio(ventasDelMes)}</p>
-            <p>{pedidosEjemplo.length} pedidos registrados</p>
+            <p>{pedidosDelMes.length} pedidos del mes</p>
           </article>
         </div>
 
         <div className="col-md-4">
           <article className="bg-white rounded p-4 h-100">
-            <h2 className="h5">Pedidos pendientes</h2>
-            <p className="fs-3 fw-bold">{pedidosPendientes}</p>
-            <p>Requiere seguimiento</p>
+            <h2 className="h5">Pedidos registrados</h2>
+            <p className="fs-3 fw-bold">{cantidadPedidos}</p>
+            <p>Compras confirmadas en esta sesión</p>
           </article>
         </div>
 
@@ -80,21 +59,34 @@ function AdminReportes({ productos }) {
             <tr>
               <th>Pedido</th>
               <th>Cliente</th>
-              <th>Vendedor</th>
+              <th>Fecha</th>
               <th>Total</th>
-              <th>Estado</th>
+              <th>Entrega</th>
+              <th>Detalle</th>
             </tr>
           </thead>
           <tbody>
-            {pedidosEjemplo.map(pedido => (
-              <tr key={pedido.id}>
-                <td>#{pedido.id}</td>
-                <td>{pedido.cliente}</td>
-                <td>{pedido.vendedor}</td>
-                <td>{formatoPrecio(pedido.total)}</td>
-                <td>{pedido.estado}</td>
-              </tr>
-            ))}
+              {pedidos.map(pedido => (
+                <tr key={pedido.id}>
+                  <td>#{pedido.id}</td>
+                  <td>{pedido.cliente.nombre}</td>
+                  <td>{new Date(pedido.fecha).toLocaleDateString("es-CL")}</td>
+                  <td>{formatoPrecio(pedido.total)}</td>
+                  <td>{pedido.entrega === "domicilio" ? "Domicilio" : "Retiro en tienda"}</td>
+                  <td>
+                    <Link className="btn btn-outline-success btn-sm" to={`/admin/pedidos/${pedido.id}`}>
+                      Ver detalle
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+              {pedidos.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="text-center text-muted py-4">
+                    No hay compras registradas en esta sesión.
+                  </td>
+                </tr>
+              )}
           </tbody>
         </table>
       </div>
