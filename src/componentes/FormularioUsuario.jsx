@@ -1,10 +1,5 @@
 import { useState } from 'react'
-
-const REGIONES = {
-  'Metropolitana': ['Santiago', 'Puente Alto', 'Maipú', 'La Florida'],
-  'Valparaíso': ['Viña del Mar', 'Valparaíso', 'Quilpué', 'Villa Alemana'],
-  'Biobío': ['Concepción', 'Talcahuano', 'Chiguayante', 'San Pedro de la Paz']
-} // fin REGIONES
+import { regionesCompra as REGIONES } from '../datos/regionesCompra.js'
 
 function FormularioUsuario({ usuarioInicial = null, onGuardar, onCancelar }) {
   const [formulario, setFormulario] = useState({
@@ -14,6 +9,7 @@ function FormularioUsuario({ usuarioInicial = null, onGuardar, onCancelar }) {
     rut: usuarioInicial?.rut ?? '',
     region: usuarioInicial?.region ?? '',
     comuna: usuarioInicial?.comuna ?? '',
+    direccion: usuarioInicial?.direccion ?? '',
     rol: usuarioInicial?.rol ?? 'cliente'
   }) // fin estado formulario
 
@@ -105,6 +101,19 @@ function FormularioUsuario({ usuarioInicial = null, onGuardar, onCancelar }) {
           />
         </div>
         {/* fin campo rut */}
+
+        <div className="col-md-6">
+        <label htmlFor="direccion" className="form-label">Dirección</label>
+        <input
+          id="direccion"
+          name="direccion"
+          className="form-control"
+          value={formulario.direccion}
+          onChange={cambiarCampo}
+          placeholder="Av. Ejemplo 1234"
+          />
+        </div>
+        {/* fin campo direccion */}
 
         <div className="col-md-6">
           <label htmlFor="region" className="form-label">Región</label>

@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { obtenerSesion, cerrarSesion } from '../servicios/sesion.js'
+import { obtenerSesion } from '../servicios/sesion.js'
+import { regionesCompra as REGIONES } from '../datos/regionesCompra.js'
 import { buscarUsuario, actualizarUsuario } from '../servicios/usuarios.js'
 import { useNavigate } from 'react-router-dom'
 
-function Perfil() {
+function Perfil({ onActualizarUsuario, onCerrarSesion }) {
   const sesion = obtenerSesion()
   const navigate = useNavigate()
   const usuarioActual = sesion ? buscarUsuario(sesion.id) : null
@@ -12,17 +13,12 @@ function Perfil() {
     nombre: usuarioActual?.nombre ?? '',
     email: usuarioActual?.email ?? '',
     region: usuarioActual?.region ?? '',
-    comuna: usuarioActual?.comuna ?? ''
+    comuna: usuarioActual?.comuna ?? '',
+    direccion: usuarioActual?.direccion ?? ''
   }) // fin estado formulario
 
   const [mensaje, setMensaje] = useState('') // fin estado mensaje
   const [error, setError] = useState('') // fin estado error
-
-  const REGIONES = {
-    'Metropolitana': ['Santiago', 'Puente Alto', 'Maipú', 'La Florida'],
-    'Valparaíso': ['Viña del Mar', 'Valparaíso', 'Quilpué', 'Villa Alemana'],
-    'Biobío': ['Concepción', 'Talcahuano', 'Chiguayante', 'San Pedro de la Paz']
-  } // fin REGIONES
 
   function cambiarCampo(evento) {
     const { name, value } = evento.target
@@ -39,7 +35,8 @@ function Perfil() {
     setMensaje('')
 
     try {
-      actualizarUsuario(sesion.id, formulario)
+      const actualizado = actualizarUsuario(sesion.id, formulario)
+      onActualizarUsuario(actualizado)
       setMensaje('Perfil actualizado correctamente.')
     } catch (err) {
       setError(err.message)
@@ -47,7 +44,7 @@ function Perfil() {
   } // fin handleSubmit
 
   function handleCerrarSesion() {
-    cerrarSesion()
+    onCerrarSesion()
     navigate('/login')
   } // fin handleCerrarSesion
 
@@ -116,6 +113,20 @@ function Perfil() {
               />
             </div>
             {/* fin campo email */}
+
+            <div className="mb-3">
+            <label htmlFor="direccion" className="form-label">Dirección</label>
+            <input
+              id="direccion"
+              name="direccion"
+              className="form-control"
+              value={formulario.direccion}
+              onChange={cambiarCampo}
+              placeholder="Av. Ejemplo 1234"
+              />
+            </div>
+            {/* fin campo direccion */}
+            
 
             <div className="row g-3 mb-3">
               <div className="col-md-6">

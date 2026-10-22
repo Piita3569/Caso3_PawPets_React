@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import FormularioUsuario from '../componentes/FormularioUsuario.jsx'
 import { buscarUsuario, actualizarUsuario } from '../servicios/usuarios.js'
 
-function EditarUsuario() {
+function EditarUsuario({ onActualizarUsuario }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const usuario = buscarUsuario(id)
@@ -16,7 +16,8 @@ function EditarUsuario() {
   } // fin if no usuario
 
   function guardar(datos) {
-    actualizarUsuario(usuario.id, datos)
+    const actualizado = actualizarUsuario(usuario.id, datos)
+    onActualizarUsuario(actualizado)
     navigate('/admin/usuarios')
   } // fin guardar
 

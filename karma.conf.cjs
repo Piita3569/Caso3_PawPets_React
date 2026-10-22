@@ -12,7 +12,10 @@ module.exports = function (config) {
       devtool: "inline-source-map",
       resolve: { extensions: [".js", ".jsx"] },
       module: {
-        rules: [{
+        rules: [
+          { test: /\.css$/, type: "asset/source" },
+          { test: /\.(png|svg)$/, type: "asset/resource" },
+          {
           test: /\.jsx?$/,
           exclude: /node_modules/,
           use: {
