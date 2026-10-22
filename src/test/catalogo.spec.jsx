@@ -36,8 +36,8 @@ describe('Catálogo estático de María Pía', () => {
     expect(contenedor.textContent).toContain(productos[0].nombre)
     expect(leer).not.toHaveBeenCalled()
     expect(guardar).not.toHaveBeenCalled()
-    expect(contenedor.textContent).not.toContain('Nuevo producto')
-    expect(contenedor.textContent).not.toContain('Eliminar')
+    expect(contenedor.textContent).toContain('Nuevo producto')
+    expect(contenedor.textContent).toContain('Eliminar')
   })
 
   it('abre y cierra el detalle del producto mediante clic', async () => {
@@ -78,6 +78,21 @@ describe('Catálogo estático de María Pía', () => {
     expect(filas.length).toBe(categorias.length)
     expect(filas[0].textContent).toContain(categorias[0].nombre)
     expect(filas[0].querySelectorAll('td')[1].textContent).toBe(String(productos.filter(producto => producto.categoriaId === categorias[0].id).length))
-    expect(contenedor.querySelector('button[type="submit"]')?.textContent).toContain('Crear categoría')
+    expect(contenedor.querySelector('button[type="submit"]').textContent).toContain('Crear categoría')
+    expect(filas[0].querySelectorAll('button').length).toBe(2)
+    expect(filas[0].querySelectorAll('button')[0].textContent).toContain('Editar')
+    expect(filas[0].querySelectorAll('button')[1].disabled).toBe(true)
   })
+  it("abre y cancela el formulario de creación de productos", async () => {
+    await act(async () => root.render(
+      <MemoryRouter><AdminProductos productos={productos} categorias={categorias} /></MemoryRouter>
+    ))
+    expect(contenedor.querySelector("#producto-nombre")).toBeNull()
+    await act(async () => contenedor.querySelector("button.btn-success").click())
+    expect(contenedor.querySelector("#producto-nombre")).not.toBeNull()
+    expect(contenedor.querySelector("button[type=submit]").textContent).toContain("Crear producto")
+    await act(async () => Array.from(contenedor.querySelectorAll("button")).find(boton => boton.textContent.trim() === "Cancelar").click())
+    expect(contenedor.querySelector("#producto-nombre")).toBeNull()
+  })
+
 })
