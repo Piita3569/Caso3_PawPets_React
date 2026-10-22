@@ -1,7 +1,8 @@
 // Catálogo compartido desde JSON y carrito en memoria mediante estado React.
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, useLocation, Link } from 'react-router-dom'
 import Header from './componentes/Header.jsx'
+import RutaProtegida from './componentes/RutaProtegida.jsx'
 import Footer from './componentes/Footer.jsx'
 import Inicio from './paginas/Inicio.jsx'
 import Nosotros from './paginas/Nosotros.jsx'
@@ -97,6 +98,7 @@ function ContenidoApp() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/calor" element={<BlogCalor />} />
           <Route path="/blog/vacunas" element={<BlogVacunas />} />
+          <Route element={<RutaProtegida usuario={usuario} rolPermitido="administrador" />}>
           <Route path="/admin/reportes" element={<AdminReportes productos={productos} pedidos={pedidos} />} />
           <Route path="/admin/pedidos/:id" element={<DetallePedido pedido={pedidos.find(pedido => String(pedido.id) === location.pathname.split("/").pop())} />} />
           <Route
@@ -124,6 +126,7 @@ function ContenidoApp() {
             }
           />
           <Route path="/admin/categorias" element={<AdminCategorias categorias={categorias} productos={productos} onCrear={nombre => setCategorias(actuales => crearCategoria(actuales, nombre))} onEditar={(id, nombre) => setCategorias(actuales => editarCategoria(actuales, id, nombre))} onEliminar={id => setCategorias(actuales => eliminarCategoria(actuales, productos, id))} />} />
+          </Route>
           <Route path="/productos" element={<Catalogo productos={productos} onAgregar={agregar} />} />
           <Route path="/productos/:id" element={<DetalleProducto key={location.pathname} productos={productos} onAgregar={agregar} />} />
           <Route path="/categorias" element={<Categorias productos={productos} categorias={categorias} onAgregar={agregar} />} />
@@ -137,11 +140,15 @@ function ContenidoApp() {
           <Route path="/login" element={<Login onLogin={recibirSesion} />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/contacto" element={<Contacto />} />
-          <Route path="/vendedor" element={<Vendedor onCerrarSesion={cerrarSesionActual} />} />
+          <Route element={<RutaProtegida usuario={usuario} rolPermitido="administrador" />}>
           <Route path="/admin/usuarios/detalle/:id" element={<DetalleUsuario />} />
           <Route path="/admin/usuarios/nuevo" element={<NuevoUsuario />} />
           <Route path="/admin/usuarios/:id" element={<EditarUsuario onActualizarUsuario={actualizarUsuarioSesion} />} />
           <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+          </Route>
+          <Route element={<RutaProtegida usuario={usuario} rolPermitido="vendedor" />}>
+          <Route path="/vendedor" element={<Vendedor onCerrarSesion={cerrarSesionActual} />} />
+          </Route>
           <Route path="/perfil" element={<Perfil onActualizarUsuario={actualizarUsuarioSesion} onCerrarSesion={cerrarSesionActual} />} />
           <Route path="*" element={<main className="container py-4"><h1>Vista no disponible</h1>
             <p>Esta dirección no tiene una página integrada todavía.</p><Link to="/productos">Ir a la tienda</Link></main>} />

@@ -2,7 +2,7 @@
 import { act } from 'react'
 import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import App from '../App.jsx'
-import { crearUsuario, eliminarUsuario } from '../servicios/usuarios.js'
+import { crearUsuario, eliminarUsuario, actualizarUsuario } from '../servicios/usuarios.js'
 import { iniciarSesion, obtenerSesion } from '../servicios/sesion.js'
 
 describe('Integración de la compra de Andrés con usuarios y sesión', () => {
@@ -158,7 +158,8 @@ describe('Integración de la compra de Andrés con usuarios y sesión', () => {
   })
 
   it('refresca el checkout al editar el usuario de la sesión desde administración', () => {
-    abrir('/admin/usuarios/' + cliente.id, cliente)
+    const administrador = actualizarUsuario(cliente.id, { rol: 'administrador' })
+    abrir('/admin/usuarios/' + administrador.id, administrador)
     fireEvent.change(screen.getByLabelText('Nombre completo'), { target: { value: 'Nombre editado' } })
     fireEvent.click(screen.getByRole('button', { name: 'Guardar usuario' }))
     expect(obtenerSesion().nombre).toBe('Nombre editado')
