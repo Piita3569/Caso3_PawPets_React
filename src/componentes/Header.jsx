@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import '../estilos/header.css'
 
-function Header({ cantidadCarrito = 0 }) {
+function Header({ cantidadCarrito = 0, usuario = null }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
 
   const cerrarMenu = () => setMenuAbierto(false)
@@ -36,10 +36,18 @@ function Header({ cantidadCarrito = 0 }) {
               <NavLink className="nav-link" to="/nosotros" onClick={cerrarMenu}>Nosotros</NavLink>
               <NavLink className="nav-link" to="/blog" onClick={cerrarMenu}>Blog</NavLink>
               <NavLink className="nav-link" to="/contacto" onClick={cerrarMenu}>Contacto</NavLink>
-              <NavLink className="nav-link" to="/vendedor" onClick={cerrarMenu}>Vendedor</NavLink>
-              <NavLink className="nav-link" to="/admin/productos" onClick={cerrarMenu}>Administrador</NavLink>
-              <NavLink className="nav-link" to="/admin/reportes" onClick={cerrarMenu}>Reportes</NavLink>
-              <NavLink className="nav-link" to="/login" onClick={cerrarMenu}>Ingresar</NavLink>
+              {usuario?.rol === 'vendedor' && (
+                <NavLink className="nav-link" to="/vendedor" onClick={cerrarMenu}>Vendedor</NavLink>
+              )}
+              {usuario?.rol === 'administrador' && (
+                <>
+                  <NavLink className="nav-link" to="/admin/productos" onClick={cerrarMenu}>Administrador</NavLink>
+                  <NavLink className="nav-link" to="/admin/reportes" onClick={cerrarMenu}>Reportes</NavLink>
+                </>
+              )}
+              {!usuario && (
+                <NavLink className="nav-link" to="/login" onClick={cerrarMenu}>Ingresar</NavLink>
+              )}
               <NavLink className="cart-button" to="/carrito" onClick={cerrarMenu}>
                 🛒 Carrito <b>{cantidadCarrito}</b>
               </NavLink>
