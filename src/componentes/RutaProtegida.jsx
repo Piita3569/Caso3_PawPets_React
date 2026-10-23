@@ -15,7 +15,7 @@ function RutaProtegida({ usuario, rolPermitido, children }) {
     return <Navigate to={destino} replace />
   }
 
-  return children ?? <Outlet />
+  return children ? children : <Outlet />
 }
 
 export default RutaProtegida

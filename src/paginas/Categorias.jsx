@@ -19,7 +19,7 @@ function Categorias({ productos, categorias, onAgregar }) {
       </div>
       {id && !seleccionada ? <p role="alert">La categoría no existe.</p> : (
         <>
-          <h2 className="h4 mb-3">{seleccionada?.nombre ?? 'Todos los productos'}</h2>
+          <h2 className="h4 mb-3">{seleccionada ? seleccionada.nombre : 'Todos los productos'}</h2>
           <ListaProductos productos={filtrados} onAgregar={onAgregar} />
         </>
       )}

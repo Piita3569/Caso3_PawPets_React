@@ -1,98 +1,82 @@
-/* global describe, beforeEach, afterEach, it, expect, spyOn */
-import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AdminProductos from '../paginas/AdminProductos.jsx'
 import AdminCategorias from '../paginas/AdminCategorias.jsx'
 import productos from '../datos/productos.json'
 import categorias from '../datos/categorias.json'
 
-describe('Catálogo estático de María Pía', () => {
-  let contenedor
-  let root
-  let entornoActAnterior
+// Revisa las consultas de productos y categorías, el detalle y el filtro de stock.
+describe('Catálogo administrativo', () => {
+  afterEach(() => cleanup())
 
-  beforeEach(() => {
-    entornoActAnterior = globalThis.IS_REACT_ACT_ENVIRONMENT
-    globalThis.IS_REACT_ACT_ENVIRONMENT = true
-    contenedor = document.createElement('div')
-    document.body.appendChild(contenedor)
-    root = createRoot(contenedor)
+  // Datos: Productos y categorías de los archivos JSON.
+  // Acción: Abrir la consulta de productos.
+  // Resultado esperado: Hay una fila por producto más el encabezado, y aparece el nombre del primer producto.
+  it('muestra los productos recibidos desde el JSON', () => {
+    render(<MemoryRouter><AdminProductos productos={productos} categorias={categorias} /></MemoryRouter>)
+
+    expect(screen.getAllByRole('row').length).toBe(productos.length + 1)
+    expect(screen.getByText(productos[0].nombre)).toBeTruthy()
   })
 
-  afterEach(async () => {
-    await act(async () => root.unmount())
-    contenedor.remove()
-    globalThis.IS_REACT_ACT_ENVIRONMENT = entornoActAnterior
+  // Datos: Consulta de productos con el detalle cerrado.
+  // Acción: Abrir el primer producto y luego pulsar Cerrar detalle.
+  // Resultado esperado: Aparece su descripción al abrir y desaparece la sección de detalle al cerrar.
+  it('abre el detalle al pulsar Ver detalle y lo oculta al pulsar Cerrar detalle', () => {
+    render(<MemoryRouter><AdminProductos productos={productos} categorias={categorias} /></MemoryRouter>)
+
+    expect(screen.queryByRole('region', { name: 'Detalle administrativo del producto' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Ver detalle de ' + productos[0].nombre }))
+    expect(screen.getByText(productos[0].descripcion)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar detalle' }))
+    expect(screen.queryByRole('region', { name: 'Detalle administrativo del producto' })).toBeNull()
   })
 
-  it('muestra los productos del JSON recibidos por props sin acceder al almacenamiento', async () => {
-    const leer = spyOn(Storage.prototype, 'getItem')
-    const guardar = spyOn(Storage.prototype, 'setItem')
-    await act(async () => root.render(
-      <MemoryRouter><AdminProductos productos={productos} categorias={categorias} /></MemoryRouter>
-    ))
-    expect(contenedor.querySelectorAll('tbody tr').length).toBe(productos.length)
-    expect(contenedor.textContent).toContain(productos[0].nombre)
-    expect(leer).not.toHaveBeenCalled()
-    expect(guardar).not.toHaveBeenCalled()
-    expect(contenedor.textContent).toContain('Nuevo producto')
-    expect(contenedor.textContent).toContain('Eliminar')
-  })
-
-  it('abre y cierra el detalle del producto mediante clic', async () => {
-    const copiaOriginal = JSON.stringify(productos)
-    await act(async () => root.render(
-      <MemoryRouter><AdminProductos productos={productos} categorias={categorias} /></MemoryRouter>
-    ))
-    expect(contenedor.querySelector('[aria-label="Detalle administrativo del producto"]')).toBeNull()
-    await act(async () => contenedor.querySelector('tbody button').click())
-    expect(contenedor.querySelector('[aria-label="Detalle administrativo del producto"]').textContent).toContain(productos[0].descripcion)
-    await act(async () => contenedor.querySelector('section button').click())
-    expect(contenedor.querySelector('[aria-label="Detalle administrativo del producto"]')).toBeNull()
-    expect(JSON.stringify(productos)).toBe(copiaOriginal)
-  })
-
-  it('filtra el stock crítico y agotado sin modificar los productos', async () => {
+  // Datos: Tres productos con stock 8, 5 y 0.
+  // Acción: Activar y desactivar el filtro de stock crítico.
+  // Resultado esperado: El filtro muestra solo los de stock 5 y 0; al quitarlo vuelven los tres y el stock no cambia.
+  it('filtra los productos críticos y agotados sin cambiar sus existencias', () => {
     const ejemplos = [
       { ...productos[0], id: 101, nombre: 'Normal', stock: 8 },
       { ...productos[0], id: 102, nombre: 'Crítico', stock: 5 },
       { ...productos[0], id: 103, nombre: 'Agotado', stock: 0 }
     ]
-    await act(async () => root.render(
-      <MemoryRouter><AdminProductos productos={ejemplos} categorias={categorias} /></MemoryRouter>
-    ))
-    await act(async () => contenedor.querySelector('#solo-criticos').click())
-    expect(contenedor.querySelectorAll('tbody tr').length).toBe(2)
-    expect(contenedor.querySelector('tbody').textContent).not.toContain('Normal')
+    render(<MemoryRouter><AdminProductos productos={ejemplos} categorias={categorias} /></MemoryRouter>)
+
+    fireEvent.click(screen.getByLabelText('Mostrar solo productos con stock crítico o agotado'))
+    expect(screen.getAllByRole('row').length).toBe(3)
+    expect(screen.queryByText('Normal', { selector: 'td' })).toBeNull()
     expect(ejemplos.map(producto => producto.stock)).toEqual([8, 5, 0])
-    await act(async () => contenedor.querySelector('#solo-criticos').click())
-    expect(contenedor.querySelectorAll('tbody tr').length).toBe(3)
+    fireEvent.click(screen.getByLabelText('Mostrar solo productos con stock crítico o agotado'))
+    expect(screen.getAllByRole('row').length).toBe(4)
   })
 
-  it('muestra las categorías del JSON y la cantidad de productos asociados', async () => {
-    await act(async () => root.render(
-      <MemoryRouter><AdminCategorias categorias={categorias} productos={productos} /></MemoryRouter>
-    ))
-    const filas = contenedor.querySelectorAll('tbody tr')
-    expect(filas.length).toBe(categorias.length)
-    expect(filas[0].textContent).toContain(categorias[0].nombre)
-    expect(filas[0].querySelectorAll('td')[1].textContent).toBe(String(productos.filter(producto => producto.categoriaId === categorias[0].id).length))
-    expect(contenedor.querySelector('button[type="submit"]').textContent).toContain('Crear categoría')
-    expect(filas[0].querySelectorAll('button').length).toBe(2)
-    expect(filas[0].querySelectorAll('button')[0].textContent).toContain('Editar')
-    expect(filas[0].querySelectorAll('button')[1].disabled).toBe(true)
-  })
-  it("abre y cancela el formulario de creación de productos", async () => {
-    await act(async () => root.render(
-      <MemoryRouter><AdminProductos productos={productos} categorias={categorias} /></MemoryRouter>
-    ))
-    expect(contenedor.querySelector("#producto-nombre")).toBeNull()
-    await act(async () => contenedor.querySelector("button.btn-success").click())
-    expect(contenedor.querySelector("#producto-nombre")).not.toBeNull()
-    expect(contenedor.querySelector("button[type=submit]").textContent).toContain("Crear producto")
-    await act(async () => Array.from(contenedor.querySelectorAll("button")).find(boton => boton.textContent.trim() === "Cancelar").click())
-    expect(contenedor.querySelector("#producto-nombre")).toBeNull()
+  // Datos: Productos y categorías del JSON.
+  // Acción: Abrir la consulta de categorías.
+  // Resultado esperado: Hay una fila por categoría; la primera muestra su nombre y la cantidad de productos asociados.
+  it('muestra cada categoría y la cantidad de productos asociados', () => {
+    render(<MemoryRouter><AdminCategorias categorias={categorias} productos={productos} /></MemoryRouter>)
+
+    const filas = screen.getAllByRole('row')
+    expect(filas.length).toBe(categorias.length + 1)
+    expect(filas[1].textContent).toContain(categorias[0].nombre)
+    expect(filas[1].cells[2].textContent).toBe(String(productos.filter(producto => producto.categoriaId === categorias[0].id).length))
   })
 
+  // Datos: Consultas de productos y categorías con una copia del contenido original del JSON.
+  // Acción: Buscar controles de escritura y abrir el detalle del primer producto.
+  // Resultado esperado: No hay botones para crear, editar o eliminar y el contenido del JSON sigue igual.
+  it('permite consultar el catálogo sin ofrecer crear, editar o eliminar datos', () => {
+    const original = JSON.stringify({ productos, categorias })
+    render(
+      <MemoryRouter>
+        <AdminProductos productos={productos} categorias={categorias} />
+        <AdminCategorias categorias={categorias} productos={productos} />
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByRole('button', { name: /Nuevo|Crear|Editar|Eliminar/ })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Ver detalle de ' + productos[0].nombre }))
+    expect(JSON.stringify({ productos, categorias })).toBe(original)
+  })
 })

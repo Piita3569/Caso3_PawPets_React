@@ -8,18 +8,20 @@ export function listarUsuarios() {
 } // fin listarUsuarios
 
 export function buscarUsuario(id) {
-  return usuarios.find(usuario => usuario.id === Number(id)) ?? null
+  const usuario = usuarios.find(usuario => usuario.id === Number(id))
+  return usuario || null
 } // fin buscarUsuario
 
 export function buscarUsuarioPorEmail(email) {
-  return usuarios.find(
+  const usuario = usuarios.find(
     usuario => usuario.email.toLowerCase() === email.toLowerCase()
-  ) ?? null
+  )
+  return usuario || null
 } // fin buscarUsuarioPorEmail
 
 export function crearUsuario(datosUsuario) {
-  const nombre = String(datosUsuario.nombre ?? '').trim()
-  const email = String(datosUsuario.email ?? '').trim()
+  const nombre = String(datosUsuario.nombre == null ? '' : datosUsuario.nombre).trim()
+  const email = String(datosUsuario.email == null ? '' : datosUsuario.email).trim()
 
   if (!nombre) throw new Error('El nombre es obligatorio.')
   if (!email) throw new Error('El correo es obligatorio.')
@@ -36,7 +38,7 @@ export function crearUsuario(datosUsuario) {
     id: nuevoId,
     nombre,
     email,
-    rol: datosUsuario.rol ?? 'cliente'
+    rol: datosUsuario.rol == null ? 'cliente' : datosUsuario.rol
   }
 
   usuarios.push(nuevoUsuario)
@@ -48,7 +50,7 @@ export function actualizarUsuario(id, datosActualizados) {
 
   if (indice === -1) throw new Error('El usuario no existe.')
 
-  const emailNuevo = String(datosActualizados.email ?? '').trim().toLowerCase()
+  const emailNuevo = String(datosActualizados.email == null ? '' : datosActualizados.email).trim().toLowerCase()
 
   const duplicado = usuarios.some(
     usuario => usuario.email.toLowerCase() === emailNuevo && usuario.id !== Number(id)
