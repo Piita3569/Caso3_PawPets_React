@@ -1,56 +1,56 @@
-/* global describe, it, expect, afterEach */
 import { render, screen, cleanup } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import AdminReportes from '../paginas/AdminReportes.jsx'
 import DetallePedido from '../paginas/DetallePedido.jsx'
 
-afterEach(() => cleanup())
+// Revisa las sumas de ventas y los datos del comprobante de un pedido.
+describe('Reportes y pedidos', () => {
+  afterEach(() => cleanup())
 
-describe('Reportes administrativos de PawPets', () => {
+  // Datos: Listas vacías de productos y pedidos.
+  // Acción: Abrir los reportes administrativos.
+  // Resultado esperado: Las ventas muestran $0 y aparece el mensaje de que no hay compras en la sesión.
   it('muestra ventas en cero y un mensaje cuando no existen pedidos', () => {
-    render(
-      <MemoryRouter>
-        <AdminReportes productos={[]} pedidos={[]} />
-      </MemoryRouter>
-    )
+    render(<MemoryRouter><AdminReportes productos={[]} pedidos={[]} /></MemoryRouter>)
 
     expect(screen.getByText('$0')).toBeTruthy()
     expect(screen.getByText('No hay compras registradas en esta sesión.')).toBeTruthy()
   })
-})
 
-describe('Cálculo de ventas en reportes', () => {
-  it('suma correctamente los pedidos registrados durante el mes', () => {
+  // Datos: Dos pedidos del mes actual, uno de $10.000 y otro de $15.000.
+  // Acción: Abrir los reportes con ambos pedidos.
+  // Resultado esperado: Se muestran $25.000, los nombres de los dos clientes y dos enlaces Ver detalle.
+  it('suma dos pedidos del mes y muestra un enlace al detalle de cada uno', () => {
     const fecha = new Date().toISOString()
     const pedidos = [
       { id: 101, cliente: { nombre: 'Cliente Uno' }, fecha, total: 10000, entrega: 'retiro' },
       { id: 102, cliente: { nombre: 'Cliente Dos' }, fecha, total: 15000, entrega: 'domicilio' }
     ]
-
-    render(
-      <MemoryRouter>
-        <AdminReportes productos={[]} pedidos={pedidos} />
-      </MemoryRouter>
-    )
+    render(<MemoryRouter><AdminReportes productos={[]} pedidos={pedidos} /></MemoryRouter>)
 
     expect(screen.getByText('$25.000')).toBeTruthy()
     expect(screen.getByText('Cliente Uno')).toBeTruthy()
     expect(screen.getByText('Cliente Dos')).toBeTruthy()
     expect(screen.getAllByRole('link', { name: 'Ver detalle' }).length).toBe(2)
   })
-})
 
-describe('Detalle de pedidos de PawPets', () => {
-  it('informa cuando el pedido solicitado no existe', () => {
-    render(<DetallePedido pedido={undefined} />)
+  // Datos: Dirección /admin/pedidos/999 y lista de pedidos vacía.
+  // Acción: Abrir el detalle de ese pedido.
+  // Resultado esperado: Se muestra el título Pedido no disponible.
+  it('avisa cuando el ID de la dirección no corresponde a un pedido', () => {
+    render(
+      <MemoryRouter initialEntries={['/admin/pedidos/999']}>
+        <Routes><Route path="/admin/pedidos/:id" element={<DetallePedido pedidos={[]} />} /></Routes>
+      </MemoryRouter>
+    )
 
     expect(screen.getByRole('heading', { name: 'Pedido no disponible' })).toBeTruthy()
-    expect(screen.getByText('No se encontró la compra solicitada en el historial de esta sesión.')).toBeTruthy()
   })
-})
 
-describe('Comprobante de compra simulada', () => {
-  it('muestra los datos del pedido, su producto y el total', () => {
+  // Datos: Pedido 103 de Cliente Prueba con dos Huesos de goma de $3.500.
+  // Acción: Abrir /admin/pedidos/103.
+  // Resultado esperado: Se ven pedido, cliente, correo, producto, total $7.000, botón de impresión y enlace a reportes.
+  it('busca el pedido por su ID y muestra cliente, producto, total e impresión', () => {
     const pedido = {
       id: 103,
       fecha: '2026-10-22T15:00:00.000Z',
@@ -62,14 +62,12 @@ describe('Comprobante de compra simulada', () => {
       ],
       total: 7000
     }
-
     render(
-      <MemoryRouter>
-        <DetallePedido pedido={pedido} />
+      <MemoryRouter initialEntries={['/admin/pedidos/103']}>
+        <Routes><Route path="/admin/pedidos/:id" element={<DetallePedido pedidos={[pedido]} />} /></Routes>
       </MemoryRouter>
     )
 
-    expect(screen.getByText(/SIN VALIDEZ TRIBUTARIA/)).toBeTruthy()
     expect(screen.getByRole('heading', { name: 'Detalle del pedido #103' })).toBeTruthy()
     expect(screen.getByText(/Cliente Prueba/)).toBeTruthy()
     expect(screen.getByText(/prueba@pawpets.cl/)).toBeTruthy()

@@ -8,22 +8,23 @@ import ResumenCompra from '../componentes/ResumenCompra.jsx'
 function Checkout({ carrito, productos, onConfirmar, usuario = null }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const usuarioId = usuario ? usuario.id : null
   const [cliente, setCliente] = useState(() => {
     const reintento = location.state
-    if (reintento?.cliente && reintento.usuarioId === (usuario?.id ?? null)) return reintento.cliente
+    if (reintento?.cliente && reintento.usuarioId === usuarioId) return reintento.cliente
     return {
-      nombre: usuario?.nombre ?? '',
-      email: usuario?.email ?? '',
-      direccion: usuario?.direccion ?? '',
-      region: usuario?.region ?? '',
-      comuna: usuario?.comuna ?? '',
+      nombre: usuario?.nombre || '',
+      email: usuario?.email || '',
+      direccion: usuario?.direccion || '',
+      region: usuario?.region || '',
+      comuna: usuario?.comuna || '',
       entrega: 'domicilio'
     }
   })
   const [resultado, setResultado] = useState('exitoso')
   const [error, setError] = useState('')
   const [procesando, setProcesando] = useState(false)
-  const comunas = regionesCompra[cliente.region] ?? []
+  const comunas = regionesCompra[cliente.region] || []
 
   function cambiarCampo(evento) {
     const { name, value } = evento.target
@@ -47,10 +48,10 @@ function Checkout({ carrito, productos, onConfirmar, usuario = null }) {
     try {
       validarCarritoCompra(carrito, productos)
       if (resultado === 'fallido') {
-        navigate('/compra/error', { state: { cliente, usuarioId: usuario?.id ?? null } })
+        navigate('/compra/error', { state: { cliente, usuarioId } })
         return
       }
-      const pedido = onConfirmar(cliente, usuario?.id ?? null)
+      const pedido = onConfirmar(cliente, usuarioId)
       navigate('/compra/exito/' + pedido.id)
     } catch (error) {
       setError(error.message)

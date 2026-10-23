@@ -10,11 +10,11 @@ function Perfil({ onActualizarUsuario, onCerrarSesion }) {
   const usuarioActual = sesion ? buscarUsuario(sesion.id) : null
 
   const [formulario, setFormulario] = useState({
-    nombre: usuarioActual?.nombre ?? '',
-    email: usuarioActual?.email ?? '',
-    region: usuarioActual?.region ?? '',
-    comuna: usuarioActual?.comuna ?? '',
-    direccion: usuarioActual?.direccion ?? ''
+    nombre: usuarioActual?.nombre || '',
+    email: usuarioActual?.email || '',
+    region: usuarioActual?.region || '',
+    comuna: usuarioActual?.comuna || '',
+    direccion: usuarioActual?.direccion || ''
   }) // fin estado formulario
 
   const [mensaje, setMensaje] = useState('') // fin estado mensaje

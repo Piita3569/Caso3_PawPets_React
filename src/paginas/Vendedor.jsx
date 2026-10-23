@@ -1,9 +1,8 @@
 import { obtenerSesion } from '../servicios/sesion.js'
 import { listarUsuarios } from '../servicios/usuarios.js'
 import { Navigate, useNavigate } from 'react-router-dom'
-import productos from '../datos/productos.json'
 
-function Vendedor({ onCerrarSesion }) {
+function Vendedor({ productos, onCerrarSesion }) {
   const sesion = obtenerSesion()
   const navigate = useNavigate()
   const clientes = listarUsuarios().filter(u => u.rol === 'cliente')

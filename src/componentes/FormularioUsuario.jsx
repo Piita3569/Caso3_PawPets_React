@@ -3,14 +3,14 @@ import { regionesCompra as REGIONES } from '../datos/regionesCompra.js'
 
 function FormularioUsuario({ usuarioInicial = null, onGuardar, onCancelar }) {
   const [formulario, setFormulario] = useState({
-    nombre: usuarioInicial?.nombre ?? '',
-    email: usuarioInicial?.email ?? '',
-    password: usuarioInicial?.password ?? '',
-    rut: usuarioInicial?.rut ?? '',
-    region: usuarioInicial?.region ?? '',
-    comuna: usuarioInicial?.comuna ?? '',
-    direccion: usuarioInicial?.direccion ?? '',
-    rol: usuarioInicial?.rol ?? 'cliente'
+    nombre: usuarioInicial?.nombre || '',
+    email: usuarioInicial?.email || '',
+    password: usuarioInicial?.password || '',
+    rut: usuarioInicial?.rut || '',
+    region: usuarioInicial?.region || '',
+    comuna: usuarioInicial?.comuna || '',
+    direccion: usuarioInicial?.direccion || '',
+    rol: usuarioInicial?.rol || 'cliente'
   }) // fin estado formulario
 
   const [error, setError] = useState('') // fin estado error

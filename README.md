@@ -61,8 +61,8 @@ Las pruebas requieren Chrome o Chromium configurado para Karma.
 
 ### Administración
 
-- CRUD de productos con validaciones.
-- CRUD de categorías con validaciones.
+- Consulta de productos, detalle y filtro de stock crítico.
+- Consulta de categorías y cantidad de productos asociados.
 - Gestión de usuarios.
 - Reportes de ventas simuladas.
 - Historial de pedidos de la sesión.
@@ -70,9 +70,11 @@ Las pruebas requieren Chrome o Chromium configurado para Karma.
 
 ## Datos y almacenamiento
 
-El catálogo inicial se carga desde `src/datos/productos.json` y `src/datos/categorias.json`.
+El catálogo se consulta desde `src/datos/productos.json` y `src/datos/categorias.json`. App comparte esos datos con la tienda, la administración, los reportes y el vendedor mediante props.
 
-Los productos y categorías modificados, el carrito y los pedidos se mantienen en estado React. Estos datos pueden perderse al recargar la página.
+Los productos y categorías son estáticos: la aplicación no los crea, edita ni elimina. Para cambiar el catálogo se modifican los archivos JSON durante el desarrollo.
+
+El carrito y los pedidos de la compra simulada se mantienen en estado React y se pierden al recargar la página. Comprar no cambia el stock del JSON.
 
 La autenticación es simulada y utiliza `sessionStorage`. La gestión de usuarios utiliza el servicio local implementado en el proyecto.
 
@@ -82,14 +84,39 @@ La protección de rutas controla la navegación de React, pero no reemplaza la a
 
 ## Pruebas y validaciones
 
-Última validación: **22 de octubre de 2026**.
+Las pruebas están en `src/test`. Antes de cada `it` hay tres comentarios: los datos iniciales, la acción de la prueba y el resultado esperado. Los `expect` comprueban ese resultado. Se usan `render`, `screen`, `fireEvent` y `cleanup`, junto con spies de Jasmine cuando se debe comprobar una llamada.
 
-- **55 pruebas Jasmine/Karma aprobadas.**
-- **0 pruebas fallidas.**
-- Compilación Vite exitosa.
-- ESLint sin errores en los archivos revisados durante la integración.
+Por ejemplo, en la prueba de aumentar la cantidad del carrito:
 
-Las pruebas automatizadas comprueban funcionalidades de catálogo, productos, categorías, carrito, checkout, sesiones, usuarios, reportes, protección de rutas y navegación por roles.
+- Datos: una pelota de $3.000, cantidad 1 y total inicial $3.000.
+- Acción: pulsar Aumentar Pelota.
+- Resultado esperado: cantidad 2 y total $6.000.
+
+Cada caso describe lo que realmente comprueba. Por ejemplo, la prueba del comprobante verifica los datos y la presencia del botón de impresión; no comprueba una impresión física.
+
+| Archivo | Casos | Qué comprueba |
+| --- | ---: | --- |
+| `Login.spec.jsx` | 3 | Campos del login, rechazo de un correo inválido y selección obligatoria del rol. |
+| `catalogo.spec.jsx` | 5 | Productos del JSON, apertura y cierre del detalle, filtro de stock, cantidad por categoría y consulta sin opciones de crear, editar o eliminar. |
+| `tienda.spec.jsx` | 3 | Tarjetas recibidas por props, clic para agregar un producto y cambio de cantidad con su total. |
+| `compras.spec.js` | 6 | Agregar y quitar, cantidades válidas, límite de stock, cálculo del pedido, copia de precios y validación de entrega. |
+| `checkout.spec.jsx` | 5 | Autocompletado, pago fallido con reintento, pago exitoso, resumen sin pedido y datos de otra cuenta. |
+| `integracionCompra.spec.jsx` | 8 | Login y compra, edición de perfil, cierre de sesión, compra como invitado, cambio de cuenta, limpieza del resumen, edición administrativa y consulta del comprobante. |
+| `reportes.spec.jsx` | 4 | Reporte vacío, suma de ventas del mes, pedido inexistente y contenido del comprobante buscado por ID. |
+| `headerRoles.spec.jsx` | 5 | Enlaces visibles para visitante, cliente, vendedor y administrador; acceso al catálogo y al carrito. |
+| `rutaProtegida.spec.jsx` | 6 | Acceso permitido o redirección según sesión y rol. |
+
+Son 45 casos. Las pruebas de creación, edición y eliminación del catálogo se retiraron al volver a la consulta de JSON estático.
+
+Verificación local del 23 de octubre de 2026: 45 pruebas aprobadas y compilación correcta.
+
+Karma genera el informe en `coverage/html/index.html`. La configuración mide componentes y páginas cargados por las pruebas; no representa la cobertura global de App y servicios.
+
+Para revisar el código con ESLint:
+
+```bash
+npm run lint
+```
 
 ## Estado del proyecto
 

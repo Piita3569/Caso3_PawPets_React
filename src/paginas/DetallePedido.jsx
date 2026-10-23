@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import ResumenCompra from '../componentes/ResumenCompra.jsx'
-function DetallePedido({ pedido }) {
+
+function DetallePedido({ pedidos = [] }) {
+  const { id } = useParams()
+  const pedido = pedidos.find(pedido => pedido.id === Number(id))
   if (!pedido) {
     return (
       <main className="container py-5">

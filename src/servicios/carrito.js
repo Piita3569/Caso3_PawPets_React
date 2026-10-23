@@ -1,7 +1,7 @@
 // Funciones de cálculo: el componente padre conserva el carrito en useState.
 export function agregarAlCarrito(carrito, producto) {
   const existente = carrito.find(item => item.productoId === producto.id)
-  const cantidad = (existente?.cantidad ?? 0) + 1
+  const cantidad = existente ? existente.cantidad + 1 : 1
   if (cantidad > producto.stock) throw new Error('No hay stock suficiente.')
 
   if (existente) {
@@ -28,12 +28,12 @@ export function obtenerLineas(carrito, productos) {
     const producto = productos.find(producto => producto.id === item.productoId)
     return {
       productoId: item.productoId,
-      nombre: producto?.nombre ?? 'Producto no disponible',
-      precio: producto?.precio ?? 0,
-      stock: producto?.stock ?? 0,
+      nombre: producto ? producto.nombre : 'Producto no disponible',
+      precio: producto ? producto.precio : 0,
+      stock: producto ? producto.stock : 0,
       disponible: Boolean(producto),
       cantidad: item.cantidad,
-      subtotal: (producto?.precio ?? 0) * item.cantidad
+      subtotal: (producto ? producto.precio : 0) * item.cantidad
     }
   })
 }

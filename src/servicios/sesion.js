@@ -8,9 +8,9 @@ export function iniciarSesion(usuario) {
     nombre: usuario.nombre,
     email: usuario.email,
     rol: usuario.rol,
-    region: usuario.region ?? '',
-    comuna: usuario.comuna ?? '',
-    direccion: usuario.direccion ?? ''
+    region: usuario.region || '',
+    comuna: usuario.comuna || '',
+    direccion: usuario.direccion || ''
   }
   sessionStorage.setItem(CLAVE_SESION, JSON.stringify(datos))
   return datos

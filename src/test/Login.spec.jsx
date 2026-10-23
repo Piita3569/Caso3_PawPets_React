@@ -1,57 +1,45 @@
-import { render, screen, cleanup, fireEvent } from "@testing-library/react"
-import { MemoryRouter } from "react-router-dom"
-import Login from "../paginas/Login.jsx"
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import Login from '../paginas/Login.jsx'
 
-describe("Componente Login", () => {
+// Revisa los campos del login y los mensajes ante datos incorrectos.
+describe('Login', () => {
+  afterEach(() => cleanup())
 
-  afterEach(() => {
-    cleanup()
+  // Datos: Login sin datos ingresados.
+  // Acción: Abrir el formulario de ingreso.
+  // Resultado esperado: Se ven rol, correo, contraseña y el botón Ingresar.
+  it('muestra los campos de rol, correo y contraseña junto al botón Ingresar', () => {
+    render(<MemoryRouter><Login onLogin={() => {}} /></MemoryRouter>)
+
+    expect(screen.getByLabelText('Rol')).toBeTruthy()
+    expect(screen.getByLabelText('Correo electrónico')).toBeTruthy()
+    expect(screen.getByLabelText('Contraseña')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Ingresar' })).toBeTruthy()
   })
 
-  it("muestra el formulario de login con los campos correctos", () => {
-    render(
-      <MemoryRouter>
-        <Login onLogin={() => {}} />
-      </MemoryRouter>
-    )
+  // Datos: Rol cliente, correo correo-invalido y contraseña 1234.
+  // Acción: Pulsar Ingresar.
+  // Resultado esperado: Se muestra el mensaje que pide un correo válido.
+  it('rechaza un correo sin formato válido', () => {
+    render(<MemoryRouter><Login onLogin={() => {}} /></MemoryRouter>)
+    fireEvent.change(screen.getByLabelText('Rol'), { target: { value: 'cliente' } })
+    fireEvent.change(screen.getByLabelText('Correo electrónico'), { target: { value: 'correo-invalido' } })
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: '1234' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
 
-    const selectRol = screen.getByLabelText("Rol")
-    const inputEmail = screen.getByLabelText("Correo electrónico")
-    const inputPassword = screen.getByLabelText("Contraseña")
-    const boton = screen.getByRole("button", { name: "Ingresar" })
+    expect(screen.getByText('Ingrese un correo válido (@duoc.cl, @gmail.com).')).toBeTruthy()
+  })
 
-    expect(selectRol).toBeTruthy()
-    expect(inputEmail).toBeTruthy()
-    expect(inputPassword).toBeTruthy()
-    expect(boton).toBeTruthy()
-  }) // fin prueba 1
+  // Datos: Correo cliente@gmail.com, contraseña 1234 y ningún rol seleccionado.
+  // Acción: Pulsar Ingresar.
+  // Resultado esperado: Se muestra el mensaje Seleccione un rol.
+  it('pide seleccionar un rol antes de ingresar', () => {
+    render(<MemoryRouter><Login onLogin={() => {}} /></MemoryRouter>)
+    fireEvent.change(screen.getByLabelText('Correo electrónico'), { target: { value: 'cliente@gmail.com' } })
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: '1234' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Ingresar' }))
 
-  it("muestra error cuando el correo tiene formato invalido", () => {
-    render(
-      <MemoryRouter>
-        <Login onLogin={() => {}} />
-      </MemoryRouter>
-    )
-
-    const boton = screen.getByRole("button", { name: "Ingresar" })
-    fireEvent.click(boton)
-
-    const errorEmail = screen.getByText("Ingrese un correo válido (@duoc.cl, @gmail.com).")
-    expect(errorEmail).toBeTruthy()
-  }) // fin prueba 2
-
-  it("muestra error cuando no se selecciona un rol", () => {
-    render(
-      <MemoryRouter>
-        <Login onLogin={() => {}} />
-      </MemoryRouter>
-    )
-
-    const boton = screen.getByRole("button", { name: "Ingresar" })
-    fireEvent.click(boton)
-
-    const errorRol = screen.getByText("Seleccione un rol.")
-    expect(errorRol).toBeTruthy()
-  }) // fin prueba 3
-
-}) // fin describe Login
+    expect(screen.getByText('Seleccione un rol.')).toBeTruthy()
+  })
+})
