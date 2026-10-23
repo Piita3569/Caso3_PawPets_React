@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import '../estilos/header.css'
 
-function Header({ cantidadCarrito = 0, usuario = null }) {
+function Header({ cantidadCarrito = 0, usuario = null, onCerrarSesion }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [menuCuentaAbierto, setMenuCuentaAbierto] = useState(false)
 
   const cerrarMenu = () => setMenuAbierto(false)
 
@@ -45,10 +46,54 @@ function Header({ cantidadCarrito = 0, usuario = null }) {
                   <NavLink className="nav-link" to="/admin/reportes" onClick={cerrarMenu}>Reportes</NavLink>
                 </>
               )}
-              {!usuario && (
-                <NavLink className="nav-link" to="/login" onClick={cerrarMenu}>Ingresar</NavLink>
-              )}
-              <NavLink className="cart-button" to="/carrito" onClick={cerrarMenu}>
+              {!usuario ? (
+                  <NavLink className="nav-link" to="/login" onClick={cerrarMenu}>
+                    Ingresar
+                  </NavLink>
+                ) : (
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-outline-success dropdown-toggle"
+                      type="button"
+                      aria-expanded={menuCuentaAbierto}
+                      onClick={() => setMenuCuentaAbierto(!menuCuentaAbierto)}
+                    >
+                      👤 {usuario.nombre || 'Mi cuenta'}
+                    </button>
+
+                    {menuCuentaAbierto && (
+                      <div className="dropdown-menu dropdown-menu-end show">
+                        <span className="dropdown-item-text">
+                          {usuario.rol}
+                        </span>
+
+                        <NavLink
+                          className="dropdown-item"
+                          to="/perfil"
+                          onClick={() => {
+                            setMenuCuentaAbierto(false)
+                            cerrarMenu()
+                          }}
+                        >
+                          Mi perfil
+                        </NavLink>
+
+                        <button
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() => {
+                            onCerrarSesion?.()
+                            setMenuCuentaAbierto(false)
+                            cerrarMenu()
+                          }}
+                        >
+                          Cerrar sesión
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <NavLink className="cart-button" to="/carrito" onClick={cerrarMenu}>
                 🛒 Carrito <b>{cantidadCarrito}</b>
               </NavLink>
             </div>

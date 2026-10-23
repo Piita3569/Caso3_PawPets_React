@@ -89,7 +89,7 @@ function ContenidoApp() {
 
   return (
     <>
-        <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><Header cantidadCarrito={cantidadCarrito} usuario={usuario} /></div>
+        <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><Header cantidadCarrito={cantidadCarrito} usuario={usuario} onCerrarSesion={cerrarSesionActual} /></div>
         <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><NavegacionTienda /></div>
       <div className="contenido-principal">
         <Routes location={location}>
