@@ -49,7 +49,13 @@ module.exports = function (config) {
         { type: "text-summary" }
       ]
     },
-    browsers: ["ChromeHeadless"],
+    customLaunchers: {
+      ChromeHeadlessCodespaces: {
+        base: "ChromeHeadless",
+        flags: ["--no-sandbox", "--disable-dev-shm-usage"]
+      }
+    },
+    browsers: ["ChromeHeadlessCodespaces"],
     singleRun: true
   });
 };
