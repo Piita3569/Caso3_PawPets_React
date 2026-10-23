@@ -42,7 +42,9 @@ function Header({ cantidadCarrito = 0, usuario = null, onCerrarSesion }) {
               )}
               {usuario?.rol === 'administrador' && (
                 <>
-                  <NavLink className="nav-link" to="/admin/productos" onClick={cerrarMenu}>Administrador</NavLink>
+                  <NavLink className="nav-link" to="/admin/productos" onClick={cerrarMenu}>Productos</NavLink>
+                  <NavLink className="nav-link" to="/admin/categorias" onClick={cerrarMenu}>Categorías</NavLink>
+                  <NavLink className="nav-link" to="/admin/usuarios" onClick={cerrarMenu}>Usuarios</NavLink>
                   <NavLink className="nav-link" to="/admin/reportes" onClick={cerrarMenu}>Reportes</NavLink>
                 </>
               )}
