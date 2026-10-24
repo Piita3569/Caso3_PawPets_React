@@ -197,7 +197,7 @@ describe('Compra con usuario y sesión', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar compra simulada' }))
     verPerfil()
     fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
-    ingresar({ email: 'pia@duoc.cl', rol: 'administrador' })
+    ingresar({ email: 'fullstack@duoc.cl', rol: 'administrador' })
     fireEvent.click(screen.getByRole('link', { name: 'Reportes' }))
     expect(screen.getByText('Cliente de prueba')).toBeTruthy()
     fireEvent.click(screen.getByRole('link', { name: 'Ver detalle' }))
