@@ -4,7 +4,7 @@ export const usuariosIniciales = [
   {
     id: 1,
     nombre: 'María Pía Sepúlveda',
-    email: 'pia@duoc.cl',
+    email: 'fullstack@duoc.cl',
     password: '1234',
     rut: '19011022K',
     region: 'Metropolitana',
