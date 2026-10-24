@@ -103,7 +103,7 @@ Cada caso describe lo que realmente comprueba. Por ejemplo, la prueba del compro
 | `checkout.spec.jsx` | 5 | Autocompletado, pago fallido con reintento, pago exitoso, resumen sin pedido y datos de otra cuenta. |
 | `integracionCompra.spec.jsx` | 8 | Login y compra, edición de perfil, cierre de sesión, compra como invitado, cambio de cuenta, limpieza del resumen, edición administrativa y consulta del comprobante. |
 | `reportes.spec.jsx` | 4 | Reporte vacío, suma de ventas del mes, pedido inexistente y contenido del comprobante buscado por ID. |
-| `headerRoles.spec.jsx` | 5 | Enlaces visibles para visitante, cliente, vendedor y administrador; acceso al catálogo y al carrito. |
+| `headerRoles.spec.jsx` | 5 | Enlaces según el rol y un único menú principal con Catálogo, Categorías, Ofertas y Carrito. |
 | `rutaProtegida.spec.jsx` | 6 | Acceso permitido o redirección según sesión y rol. |
 
 Son 45 casos. Las pruebas de creación, edición y eliminación del catálogo se retiraron al volver a la consulta de JSON estático.

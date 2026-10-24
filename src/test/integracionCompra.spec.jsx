@@ -39,13 +39,14 @@ describe('Compra con usuario y sesión', () => {
   }
 
   function iniciarCompra() {
+    fireEvent.click(screen.getByRole('button', { name: 'Productos', exact: true }))
     fireEvent.click(screen.getByRole('link', { name: 'Catálogo' }))
     fireEvent.click(screen.getAllByRole('button', { name: 'Agregar al carrito' })[0])
     continuarCompra()
   }
 
   function continuarCompra() {
-    fireEvent.click(screen.getByRole('link', { name: 'Carrito', exact: true }))
+    fireEvent.click(screen.getByRole('link', { name: /Carrito/ }))
     fireEvent.click(screen.getByRole('link', { name: 'Continuar compra' }))
   }
 
@@ -71,7 +72,7 @@ describe('Compra con usuario y sesión', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar compra simulada' }))
     expect(screen.getByRole('heading', { name: 'Compra realizada con éxito' })).toBeTruthy()
     expect(screen.getByText(/Dirección: Calle Uno 123, Concepción, Biobío/)).toBeTruthy()
-    fireEvent.click(screen.getByRole('link', { name: 'Carrito', exact: true }))
+    fireEvent.click(screen.getByRole('link', { name: /Carrito/ }))
     expect(screen.getByText('Tu carrito está vacío.')).toBeTruthy()
   })
 
@@ -197,7 +198,7 @@ describe('Compra con usuario y sesión', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar compra simulada' }))
     verPerfil()
     fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
-    ingresar({ email: 'fullstack@duoc.cl', rol: 'administrador' })
+    ingresar({ email: 'administrador@duoc.cl', rol: 'administrador' })
     fireEvent.click(screen.getByRole('link', { name: 'Reportes' }))
     expect(screen.getByText('Cliente de prueba')).toBeTruthy()
     fireEvent.click(screen.getByRole('link', { name: 'Ver detalle' }))

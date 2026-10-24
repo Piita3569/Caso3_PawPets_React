@@ -1,4 +1,4 @@
-// Umbral de demostración ya utilizado en la versión original de Pía.
+// Se considera stock crítico cuando quedan cinco unidades o menos.
 export const UMBRAL_STOCK_CRITICO = 5
 
 export function obtenerEstadoStock(stock) {

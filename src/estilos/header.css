@@ -27,6 +27,12 @@
   color: #d8752a;
 }
 
+.site-header .dropdown-item.active,
+.site-header .dropdown-item:active {
+  background-color: #234238;
+  color: #ffffff;
+}
+
 .site-header .cart-button {
   display: inline-block;
   color: #ffffff;
