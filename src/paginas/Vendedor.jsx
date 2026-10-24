@@ -102,7 +102,7 @@ function Vendedor({ productos, onCerrarSesion }) {
         <div className="col-12">
           <div className="card p-4">
             <h3>Mis ventas</h3>
-            <p className="text-muted">Las ventas estarán disponibles cuando Pablo integre el módulo de órdenes.</p>
+            <p className="text-muted">Las ventas todavía no están disponibles en este panel.</p>
           </div>
         </div>
         {/* fin card ventas */}

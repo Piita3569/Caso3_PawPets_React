@@ -5,8 +5,13 @@ import '../estilos/header.css'
 function Header({ cantidadCarrito = 0, usuario = null, onCerrarSesion }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [menuCuentaAbierto, setMenuCuentaAbierto] = useState(false)
+  const [menuProductosAbierto, setMenuProductosAbierto] = useState(false)
 
-  const cerrarMenu = () => setMenuAbierto(false)
+  function cerrarMenu() {
+    setMenuAbierto(false)
+    setMenuCuentaAbierto(false)
+    setMenuProductosAbierto(false)
+  }
 
   return (
     <header className="site-header">
@@ -31,9 +36,25 @@ function Header({ cantidadCarrito = 0, usuario = null, onCerrarSesion }) {
             id="menu-pawpets"
             className={`collapse navbar-collapse ${menuAbierto ? 'show' : ''}`}
           >
-            <div className="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+            <div className="navbar-nav ms-auto align-items-lg-center gap-lg-3 flex-lg-wrap justify-content-lg-end">
               <NavLink className="nav-link" to="/" end onClick={cerrarMenu}>Inicio</NavLink>
-              <NavLink className="nav-link" to="/productos" onClick={cerrarMenu}>Productos</NavLink>
+              <div className="dropdown">
+                <button className="nav-link dropdown-toggle" type="button"
+                  aria-expanded={menuProductosAbierto} aria-controls="menu-productos"
+                  onClick={() => {
+                    setMenuProductosAbierto(!menuProductosAbierto)
+                    setMenuCuentaAbierto(false)
+                  }}>
+                  Productos
+                </button>
+                {menuProductosAbierto && (
+                  <div id="menu-productos" className="dropdown-menu show">
+                    <NavLink className="dropdown-item" to="/productos" onClick={cerrarMenu}>Catálogo</NavLink>
+                    <NavLink className="dropdown-item" to="/categorias" onClick={cerrarMenu}>Categorías</NavLink>
+                    <NavLink className="dropdown-item" to="/ofertas" onClick={cerrarMenu}>Ofertas</NavLink>
+                  </div>
+                )}
+              </div>
               <NavLink className="nav-link" to="/nosotros" onClick={cerrarMenu}>Nosotros</NavLink>
               <NavLink className="nav-link" to="/blog" onClick={cerrarMenu}>Blog</NavLink>
               <NavLink className="nav-link" to="/contacto" onClick={cerrarMenu}>Contacto</NavLink>
@@ -58,7 +79,10 @@ function Header({ cantidadCarrito = 0, usuario = null, onCerrarSesion }) {
                       className="btn btn-outline-success dropdown-toggle"
                       type="button"
                       aria-expanded={menuCuentaAbierto}
-                      onClick={() => setMenuCuentaAbierto(!menuCuentaAbierto)}
+                      onClick={() => {
+                        setMenuCuentaAbierto(!menuCuentaAbierto)
+                        setMenuProductosAbierto(false)
+                      }}
                     >
                       👤 {usuario.nombre || 'Mi cuenta'}
                     </button>

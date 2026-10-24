@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Header from '../componentes/Header.jsx'
 
@@ -76,11 +76,15 @@ describe('Navegación del Header según el rol', () => {
   })
 
   // Datos: Visitante sin sesión y contador del carrito en 2.
-  // Acción: Mostrar el menú principal.
-  // Resultado esperado: Aparecen el enlace al catálogo y el carrito con el contador 2.
-  it('muestra el catálogo y el contador 2 del carrito al visitante', () => {
+  // Acción: Mostrar el menú principal y abrir Productos.
+  // Resultado esperado: Un solo menú principal contiene Catálogo, Categorías, Ofertas y el carrito con contador 2.
+  it('reúne los accesos de la tienda en un solo menú principal', () => {
     mostrarMenu()
+    expect(screen.getAllByRole('navigation').length).toBe(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Productos', exact: true }))
     expect(obtenerEnlace('/productos')).toBeTruthy()
+    expect(obtenerEnlace('/categorias')).toBeTruthy()
+    expect(obtenerEnlace('/ofertas')).toBeTruthy()
     expect(screen.getByRole('link', { name: /Carrito 2/ })).toBeTruthy()
   })
 })

@@ -3,8 +3,8 @@
 export const usuariosIniciales = [
   {
     id: 1,
-    nombre: 'María Pía Sepúlveda',
-    email: 'fullstack@duoc.cl',
+    nombre: 'Administrador Demo',
+    email: 'administrador@duoc.cl',
     password: '1234',
     rut: '19011022K',
     region: 'Metropolitana',
@@ -14,8 +14,8 @@ export const usuariosIniciales = [
   },
   {
     id: 2,
-    nombre: 'Luis Veas',
-    email: 'luis@duoc.cl',
+    nombre: 'Vendedor Demo',
+    email: 'vendedor@duoc.cl',
     password: '1234',
     rut: '20123456K',
     region: 'Metropolitana',

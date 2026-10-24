@@ -20,7 +20,6 @@ import Carrito from './paginas/Carrito.jsx'
 import Checkout from './paginas/Checkout.jsx'
 import ResultadoCompra from './paginas/ResultadoCompra.jsx'
 import DetallePedido from './paginas/DetallePedido.jsx'
-import NavegacionTienda from './componentes/NavegacionTienda.jsx'
 import productos from './datos/productos.json'
 import categorias from './datos/categorias.json'
 import { agregarAlCarrito, cambiarCantidad, quitarDelCarrito } from './servicios/carrito.js'
@@ -86,7 +85,6 @@ export function ContenidoApp() {
   return (
     <>
         <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><Header cantidadCarrito={cantidadCarrito} usuario={usuario} onCerrarSesion={cerrarSesionActual} /></div>
-        <div className={location.pathname.startsWith("/admin/pedidos/") ? "d-print-none" : ""}><NavegacionTienda /></div>
       <div className="contenido-principal">
         <Routes location={location}>
           <Route path="/" element={<Inicio productos={productos} />} />
